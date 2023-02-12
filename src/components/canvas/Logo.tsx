@@ -21,7 +21,7 @@ export default function Logo({ route, ...props }) {
   return (
     <group ref={mesh} {...props}>
       {/* @ts-ignore */}
-      <Line worldUnits points={points} color='#1fb2f5' lineWidth={0.15} />
+      <Line worldUnits points={points} color='#9fb2f5' lineWidth={0.15} />
       {/* @ts-ignore */}
       <Line worldUnits points={points} color='#1fb2f5' lineWidth={0.15} rotation={[0, 0, 1]} />
       {/* @ts-ignore */}
