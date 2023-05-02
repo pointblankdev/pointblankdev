@@ -20,7 +20,6 @@ const Logo = () => {
   }
   const logo = useRef({} as any)
   useFrame((state, delta) => {
-    console.log(screen.width)
     t += delta
     logo.current.position.y = Math.sin(t) * 0.03
     logo.current.rotation.x = 0.13 + Math.PI / 4 + Math.cos(t / 3) * 0.1

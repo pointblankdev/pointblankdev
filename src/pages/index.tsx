@@ -2,6 +2,9 @@ import dynamic from 'next/dynamic'
 import Instructions from '@/components/dom/Instructions'
 import Image from 'next/image'
 import PBDLogo from 'public/pbd-logo-no-icon.png'
+import Link from 'next/link'
+import MemoDiscord from '@/components/dom/svg/Discord'
+import MemoGithub from '@/components/dom/svg/Github'
 
 // Dynamic import is used to prevent a payload when the website starts, that includes threejs, r3f etc..
 // WARNING ! errors might get obfuscated by using dynamic import.
@@ -24,5 +27,5 @@ export default function Page(props) {
 Page.canvas = (props) => <Logo />
 
 export async function getStaticProps() {
-  return { props: { title: 'Index' } }
+  return { props: { title: 'Point Blank Dev' } }
 }
