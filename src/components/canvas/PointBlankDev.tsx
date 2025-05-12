@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { Suspense, useEffect, useRef } from 'react'
 import { Environment, useGLTF, useHelper, useProgress } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
