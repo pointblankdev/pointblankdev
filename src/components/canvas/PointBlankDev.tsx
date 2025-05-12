@@ -14,7 +14,7 @@ const PointBlankDevComponent = () => {
 const Logo = () => {
   let t = 0
   const mesh = {
-    position: [0, 0, 1],
+    position: [0, 0, 2],
     rotation: [Math.PI / 4, 0, 0],
     scale: [1, 1, 1],
   }
