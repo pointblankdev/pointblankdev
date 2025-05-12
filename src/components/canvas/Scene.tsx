@@ -1,4 +1,3 @@
-// @ts-nocheck
 
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls, Preload, AdaptiveDpr } from '@react-three/drei'
@@ -260,8 +259,6 @@ export default function Scene({ children, ...props }) {
 
       {/* Dynamic lighting system */}
       <DynamicLighting />
-
-      <Glitch />
 
       <EnhancedLighting />
 
