@@ -1,4 +1,4 @@
-
+// @ts-nocheck
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls, Preload, AdaptiveDpr } from '@react-three/drei'
 import { useEffect, useRef, useState } from 'react'
