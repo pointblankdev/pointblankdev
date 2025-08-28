@@ -57,6 +57,7 @@ export default function Page(props) {
               icon={<Database className="w-6 h-6 text-primary" />}
               title="Data Solutions"
               description="Efficient data architecture and optimization"
+              className="hidden sm:block"
             />
             <ServiceCard
               icon={<Shield className="w-6 h-6 text-primary" />}
@@ -86,21 +87,22 @@ export default function Page(props) {
 }
 
 // Compact service card component
-function ServiceCard({ icon, title, description }) {
-  return (
-    <div className="p-4 rounded-lg border border-muted-foreground/10 bg-foreground/30 backdrop-blur-sm hover:bg-foreground/50 transition-colors group pointer-events-auto">
-      <div className="flex items-start space-x-3">
-        <div className="p-2 rounded-md bg-primary/10 group-hover:bg-primary/20 transition-colors">
-          {icon}
-        </div>
-        <div>
-          <h3 className="font-medium">{title}</h3>
-          <p className="text-xs text-muted-foreground mt-1">{description}</p>
+function ServiceCard({ icon, title, description, className = "" }) {
+    return (
+      <div className={`p-4 rounded-lg border border-muted-foreground/10 bg-foreground/30 backdrop-blur-sm 
+  hover:bg-foreground/50 transition-colors group pointer-events-auto ${className}`}>
+        <div className="flex items-start space-x-3">
+          <div className="p-2 rounded-md bg-primary/10 group-hover:bg-primary/20 transition-colors">
+            {icon}
+          </div>
+          <div>
+            <h3 className="font-medium">{title}</h3>
+            <p className="text-xs text-muted-foreground mt-1">{description}</p>
+          </div>
         </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
 // Canvas components go here
 // It will receive same props as the Page component (from getStaticProps, etc.)
