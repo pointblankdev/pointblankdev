@@ -41,28 +41,29 @@ export default function Page(props) {
             </h1>
           </div>
 
-          {/* Service cards in a grid */}
-          <ServiceCard
-            icon={<Code className="w-6 h-6 text-primary" />}
-            title="AI Integration"
-            description="Smart automation and AI-powered features for your business"
-          />
-          <ServiceCard
-            icon={<Globe className="w-6 h-6 text-primary" />}
-            title="Full-Stack Development"
-            description="Complete web solutions from frontend to backend"
-          />
-          <ServiceCard
-            icon={<Database className="w-6 h-6 text-primary" />}
-            title="E-commerce Solutions"
-            description="Custom online stores and payment processing systems"
-          />
-          <ServiceCard
-            icon={<Shield className="w-6 h-6 text-primary" />}
-            title="Security Consulting"
-            description="Protect your systems and digital assets"
-            className="hidden sm:block"
-          />
+          {/* Service cards in a grid */}            
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-4xl">
+            <ServiceCard
+              icon={<Code className="w-6 h-6 text-primary" />}
+              title="AI Integration"
+              description="Smart automation and AI-powered features for your business"
+            />
+            <ServiceCard
+              icon={<Globe className="w-6 h-6 text-primary" />}
+              title="Full-Stack Development"
+              description="Complete web solutions from frontend to backend"
+            />
+            <ServiceCard
+              icon={<Database className="w-6 h-6 text-primary" />}
+              title="E-commerce Solutions"
+              description="Custom online stores and payment processing systems"
+            />
+            <ServiceCard
+              icon={<Shield className="w-6 h-6 text-primary" />}
+              title="Security Consulting"
+              description="Protect your systems and digital assets"
+              className="hidden sm:block"
+            />
           </div>
         </div>
 
