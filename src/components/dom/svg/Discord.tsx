@@ -1,6 +1,6 @@
 import * as React from "react";
 
-function Discord(props) {
+function Discord(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       width="1em"

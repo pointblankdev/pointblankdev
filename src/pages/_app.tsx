@@ -1,5 +1,7 @@
-import { useRef } from 'react'
+import { useRef, type ReactNode } from 'react'
 import dynamic from 'next/dynamic'
+import type { AppProps } from 'next/app'
+import type { NextPage } from 'next'
 import { Analytics } from '@vercel/analytics/next'
 import Header from '@/config'
 import Layout from '@/components/dom/Layout'
@@ -7,8 +9,20 @@ import '@/styles/index.css'
 
 const Scene = dynamic(() => import('@/components/canvas/Scene'), { ssr: false })
 
-export default function App({ Component, pageProps = { title: 'index' } }) {
-  const ref = useRef<HTMLDivElement>(null)
+type PageWithCanvas = NextPage<AppPageProps> & {
+  canvas?: (pageProps: AppPageProps) => ReactNode
+}
+
+type AppPageProps = {
+  title?: string
+}
+
+type AppPropsWithCanvas = AppProps<AppPageProps> & {
+  Component: PageWithCanvas
+}
+
+export default function App({ Component, pageProps = { title: 'index' } }: AppPropsWithCanvas) {
+  const ref = useRef<HTMLDivElement>(null!)
   return (
     <>
       <Header title={pageProps.title} />

@@ -1,8 +1,7 @@
-// @ts-nocheck
-
 import { Suspense, useRef } from 'react'
 import { useGLTF } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
+import type * as THREE from 'three'
 
 const PointBlankDevComponent = () => {
   return (
@@ -13,29 +12,24 @@ const PointBlankDevComponent = () => {
 }
 
 const Logo = () => {
-  const mesh = {
-    position: [0, 0, 2],
-    rotation: [Math.PI / 4, 0, 0],
-    scale: [1, 1, 1],
-  }
-  const logo = useRef({} as any)
+  const logo = useRef<THREE.Group>(null)
   useFrame((state) => {
     const t = state.clock.getElapsedTime()
+    if (!logo.current) return
     logo.current.position.y = Math.sin(t) * 0.03
     logo.current.rotation.x = 0.13 + Math.PI / 4 + Math.cos(t / 3) * 0.1
     logo.current.rotation.y = Math.sin(t / 4) * 0.01
     logo.current.rotation.z = Math.sin(t) * 0.01
-    logo.current.scale.x = screen.height / 1000
-    logo.current.scale.y = screen.height / 1000
-    logo.current.scale.z = screen.height / 1000
+    logo.current.scale.setScalar(screen.height / 1000)
   })
   const { nodes, materials } = useGLTF('point-blank-dev.glb', true)
+  const material = materials['SVGMat.001']
   return (
-    <group ref={logo} scale={mesh.scale} rotation={mesh.rotation} position={mesh.position}>
-      <mesh material={materials['SVGMat.001']} geometry={nodes.Curve1.geometry} />
-      <mesh material={materials['SVGMat.001']} geometry={nodes.Curve2.geometry} />
-      <mesh material={materials['SVGMat.001']} geometry={nodes.Curve3.geometry} />
-      <mesh material={materials['SVGMat.001']} geometry={nodes.Curve4.geometry} />
+    <group ref={logo} rotation={[Math.PI / 4, 0, 0]} position={[0, 0, 2]}>
+      <mesh material={material} geometry={(nodes.Curve1 as THREE.Mesh).geometry} />
+      <mesh material={material} geometry={(nodes.Curve2 as THREE.Mesh).geometry} />
+      <mesh material={material} geometry={(nodes.Curve3 as THREE.Mesh).geometry} />
+      <mesh material={material} geometry={(nodes.Curve4 as THREE.Mesh).geometry} />
     </group>
   )
 }

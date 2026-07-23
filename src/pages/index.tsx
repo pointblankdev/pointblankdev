@@ -10,7 +10,7 @@ import { Code, Database, Globe, Shield } from 'lucide-react'
 const Logo = dynamic(() => import('@/components/canvas/PointBlankDev'), { ssr: false })
 
 // Dom components go here
-export default function Page(props) {
+export default function Page() {
   return (
     <div className='absolute flex flex-col justify-center h-full w-full bg-black' >
       {/* <Image src={PBDLogo} alt='point-blank-dev-logo' className='invert' /> */}
@@ -84,7 +84,17 @@ export default function Page(props) {
 }
 
 // Compact service card component
-function ServiceCard({ icon, title, description, className = "" }) {
+function ServiceCard({
+  icon,
+  title,
+  description,
+  className = '',
+}: {
+  icon: React.ReactNode
+  title: string
+  description: string
+  className?: string
+}) {
     return (
       <div className={`p-4 rounded-lg border border-muted-foreground/10 bg-foreground/30 backdrop-blur-sm 
   hover:bg-foreground/50 transition-colors group pointer-events-auto ${className}`}>
@@ -103,7 +113,7 @@ function ServiceCard({ icon, title, description, className = "" }) {
 
 // Canvas components go here
 // It will receive same props as the Page component (from getStaticProps, etc.)
-Page.canvas = (props) => <Logo />
+Page.canvas = () => <Logo />
 
 export async function getStaticProps() {
   return { props: { title: 'Point Blank Development - Software Consultancy' } }
