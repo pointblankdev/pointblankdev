@@ -72,7 +72,7 @@ export default function Page(props) {
 
       {/* Footer */}
       <footer className="py-4 px-8 flex justify-between items-center text-xs text-muted-foreground">
-        <div>© 2025 Point Blank Dev, LLC. All rights reserved.</div>
+        <div>© {new Date().getFullYear()} Point Blank Dev, LLC. All rights reserved.</div>
         <div className="flex gap-4">
           {/* <Link href="#" className="hover:text-foreground">Privacy</Link>
           <Link href="#" className="hover:text-foreground">Terms</Link>
