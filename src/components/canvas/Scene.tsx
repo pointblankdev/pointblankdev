@@ -3,6 +3,7 @@ import { Canvas, useFrame } from '@react-three/fiber'
 import { Preload, AdaptiveDpr } from '@react-three/drei'
 import { useRef, type ComponentProps } from 'react'
 import Rig from './Rig'
+import CursorSpotlights from './CursorSpotlights'
 
 // Multi-light setup with animated positions and intensities
 const Lighting = () => {
@@ -134,6 +135,8 @@ export default function Scene({ children, ...props }: ComponentProps<typeof Canv
       <Rig intensity={0.3} smoothing={0.8}>
         <Lighting />
       </Rig>
+      {/* Outside the Rig so their aim tracks the cursor exactly */}
+      <CursorSpotlights />
       {children}
       <Preload all />
     </Canvas>
