@@ -2,6 +2,7 @@ import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import PBDLogo from 'public/pbd-logo-no-icon.png'
 import { Code, Database, Globe, Shield } from 'lucide-react'
+import { useInteraction } from '@/store'
 
 // Dynamic import is used to prevent a payload when the website starts, that includes threejs, r3f etc..
 // WARNING ! errors might get obfuscated by using dynamic import.
@@ -95,9 +96,14 @@ function ServiceCard({
   description: string
   className?: string
 }) {
+    const { setHoveredCard, triggerPulse } = useInteraction.getState()
     return (
-      <div className={`p-4 rounded-lg border border-muted-foreground/10 bg-foreground/30 backdrop-blur-sm 
-  hover:bg-foreground/50 transition-colors group pointer-events-auto ${className}`}>
+      <div
+        className={`p-4 rounded-lg border border-muted-foreground/10 bg-foreground/30 backdrop-blur-sm
+  hover:bg-foreground/50 transition-colors group pointer-events-auto cursor-pointer select-none ${className}`}
+        onMouseEnter={() => setHoveredCard(title)}
+        onMouseLeave={() => setHoveredCard(null)}
+        onClick={triggerPulse}>
         <div className="flex items-start space-x-3">
           <div className="p-2 rounded-md bg-primary/10 group-hover:bg-primary/20 transition-colors">
             {icon}

@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { Preload, AdaptiveDpr } from '@react-three/drei'
 import { useRef, type ComponentProps } from 'react'
+import Rig from './Rig'
 
 // Multi-light setup with animated positions and intensities
 const Lighting = () => {
@@ -129,7 +130,10 @@ export default function Scene({ children, ...props }: ComponentProps<typeof Canv
       }}
     >
       <AdaptiveDpr pixelated />
-      <Lighting />
+      {/* Slow, wide tilt of the whole light rig gives a parallax feel */}
+      <Rig intensity={0.3} smoothing={0.8}>
+        <Lighting />
+      </Rig>
       {children}
       <Preload all />
     </Canvas>
