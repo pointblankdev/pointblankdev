@@ -22,6 +22,7 @@ export default function Page(props) {
             alt="Point Blank Development Logo"
             width={1800}
             height={480}
+            priority
             className="h-32 sm:h-48 w-auto invert"
           />
         </div>
