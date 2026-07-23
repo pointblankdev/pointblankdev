@@ -1,16 +1,28 @@
 import * as THREE from 'three'
-import { Canvas, useFrame } from '@react-three/fiber'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
+import { useEffect } from 'react'
 import { Preload, AdaptiveDpr, Environment, Lightformer } from '@react-three/drei'
 import { useRef, type ComponentProps } from 'react'
 import Rig from './Rig'
 import CursorSpotlights from './CursorSpotlights'
+
+// Dev-only: expose the r3f state on window so the scene can be inspected
+// and lights toggled from the browser console / automation.
+const DebugBridge = () => {
+  const three = useThree()
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      ;(window as unknown as { __three?: unknown }).__three = three
+    }
+  }, [three])
+  return null
+}
 
 // Multi-light setup with animated positions and intensities
 const Lighting = () => {
   const primaryLight = useRef<THREE.DirectionalLight>(null)
   const secondaryLight = useRef<THREE.DirectionalLight>(null)
   const accentLight1 = useRef<THREE.DirectionalLight>(null)
-  const accentLight2 = useRef<THREE.DirectionalLight>(null)
   const spotLight1 = useRef<THREE.SpotLight>(null)
   const spotLight2 = useRef<THREE.SpotLight>(null)
 
@@ -33,12 +45,6 @@ const Lighting = () => {
       accentLight1.current.position.x = Math.sin(t * 0.3) * 6
       accentLight1.current.position.y = Math.cos(t * 0.3) * 2 + 3
       accentLight1.current.intensity = 0.95 + Math.sin(t * 0.6) * 0.3
-    }
-
-    if (accentLight2.current) {
-      accentLight2.current.position.x = Math.sin(t * 0.25 + Math.PI) * 4
-      accentLight2.current.position.y = Math.cos(t * 0.25 + Math.PI) * 1 + 2
-      accentLight2.current.intensity = 0.8 + Math.sin(t * 0.8) * 0.3
     }
 
     if (spotLight1.current) {
@@ -77,9 +83,7 @@ const Lighting = () => {
 
       {/* Accent directional lights */}
       <directionalLight ref={accentLight1} intensity={0.95} color={'#c4b5fd'} position={[6, 3, 2]} />
-      <directionalLight ref={accentLight2} intensity={0.8} color={'#a7f3d0'} position={[-4, 2, -30]} />
       <directionalLight intensity={0.5} color={'#ddd6fe'} position={[3, -3, 4]} />
-      <directionalLight intensity={0.65} color={'#d8b4fe'} position={[-2, 4, -20]} />
 
       {/* Spotlights for focused highlights */}
       <spotLight
@@ -104,9 +108,6 @@ const Lighting = () => {
         distance={12}
         castShadow
       />
-
-      {/* Rim light from behind */}
-      <pointLight position={[0, -2, -5]} intensity={1.3} decay={0} color={'#fafafa'} distance={8} />
 
       {/* Bottom fill light */}
       <pointLight position={[0, -4, 2]} intensity={0.65} decay={0} color={'#ede9fe'} distance={6} />
@@ -133,6 +134,7 @@ export default function Scene({ children, ...props }: ComponentProps<typeof Canv
       }}
     >
       <AdaptiveDpr pixelated />
+      <DebugBridge />
       {/* Slow, wide tilt of the whole light rig gives a parallax feel */}
       <Rig intensity={0.3} smoothing={0.8}>
         <Lighting />
