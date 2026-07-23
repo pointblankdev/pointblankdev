@@ -1,4 +1,4 @@
-import { Suspense, useRef } from 'react'
+import { Suspense, useLayoutEffect, useRef } from 'react'
 import { useGLTF } from '@react-three/drei'
 import { useFrame, useThree } from '@react-three/fiber'
 import type * as THREE from 'three'
@@ -44,7 +44,16 @@ const Logo = () => {
     logo.current.scale.setScalar(baseScale * (1 + 0.08 * Math.sin(pulse.current.strength * Math.PI)))
   })
   const { nodes, materials } = useGLTF('point-blank-dev.glb', true)
-  const material = materials['SVGMat.001']
+  const material = materials['SVGMat.001'] as THREE.MeshStandardMaterial
+  // The GLB ships with a PURE BLACK base color — and a metal's reflection
+  // tint is its base color, so black metal reflects nothing. Re-tint to a
+  // dark brand purple so the logo mirrors the environment and lights.
+  useLayoutEffect(() => {
+    material.color.set('#4c3a75')
+    material.metalness = 0.9
+    material.roughness = 0.22
+    material.envMapIntensity = 1.5
+  }, [material])
   return (
     <group ref={logo} rotation={[Math.PI / 4, 0, 0]} position={[0, 0, 2]}>
       <mesh material={material} geometry={(nodes.Curve1 as THREE.Mesh).geometry} />

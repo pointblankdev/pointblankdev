@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { Preload, AdaptiveDpr } from '@react-three/drei'
+import { Preload, AdaptiveDpr, Environment, Lightformer } from '@react-three/drei'
 import { useRef, type ComponentProps } from 'react'
 import Rig from './Rig'
 import CursorSpotlights from './CursorSpotlights'
@@ -20,25 +20,25 @@ const Lighting = () => {
     if (primaryLight.current) {
       primaryLight.current.position.x = Math.sin(t * 0.2) * 5
       primaryLight.current.position.z = Math.cos(t * 0.2) * 5
-      primaryLight.current.intensity = 0.75 + Math.sin(t * 0.5) * 0.1
+      primaryLight.current.intensity = 2.4 + Math.sin(t * 0.5) * 0.3
     }
 
     if (secondaryLight.current) {
       secondaryLight.current.position.x = Math.sin(t * 0.15 + Math.PI) * 4
       secondaryLight.current.position.z = Math.cos(t * 0.15 + Math.PI) * 4
-      secondaryLight.current.intensity = 0.2 + Math.sin(t * 0.7) * 0.05
+      secondaryLight.current.intensity = 0.65 + Math.sin(t * 0.7) * 0.15
     }
 
     if (accentLight1.current) {
       accentLight1.current.position.x = Math.sin(t * 0.3) * 6
       accentLight1.current.position.y = Math.cos(t * 0.3) * 2 + 3
-      accentLight1.current.intensity = 0.3 + Math.sin(t * 0.6) * 0.1
+      accentLight1.current.intensity = 0.95 + Math.sin(t * 0.6) * 0.3
     }
 
     if (accentLight2.current) {
       accentLight2.current.position.x = Math.sin(t * 0.25 + Math.PI) * 4
       accentLight2.current.position.y = Math.cos(t * 0.25 + Math.PI) * 1 + 2
-      accentLight2.current.intensity = 0.25 + Math.sin(t * 0.8) * 0.1
+      accentLight2.current.intensity = 0.8 + Math.sin(t * 0.8) * 0.3
     }
 
     if (spotLight1.current) {
@@ -61,7 +61,7 @@ const Lighting = () => {
       {/* Main brand light - purple */}
       <directionalLight
         ref={primaryLight}
-        intensity={0.75}
+        intensity={2.4}
         color={'#7c3aed'}
         position={[-5, -5, -5]}
         castShadow
@@ -70,16 +70,16 @@ const Lighting = () => {
       />
 
       {/* Secondary brand light - green */}
-      <directionalLight ref={secondaryLight} intensity={0.2} color={'#16a34a'} position={[-5, -2, -5]} />
+      <directionalLight ref={secondaryLight} intensity={0.65} color={'#16a34a'} position={[-5, -2, -5]} />
 
       {/* Soft ambient lighting */}
-      <ambientLight intensity={0.6} color={'#ede9fe'} />
+      <ambientLight intensity={1.9} color={'#ede9fe'} />
 
       {/* Accent directional lights */}
-      <directionalLight ref={accentLight1} intensity={0.3} color={'#c4b5fd'} position={[6, 3, 2]} />
-      <directionalLight ref={accentLight2} intensity={0.25} color={'#a7f3d0'} position={[-4, 2, -30]} />
-      <directionalLight intensity={0.15} color={'#ddd6fe'} position={[3, -3, 4]} />
-      <directionalLight intensity={0.2} color={'#d8b4fe'} position={[-2, 4, -20]} />
+      <directionalLight ref={accentLight1} intensity={0.95} color={'#c4b5fd'} position={[6, 3, 2]} />
+      <directionalLight ref={accentLight2} intensity={0.8} color={'#a7f3d0'} position={[-4, 2, -30]} />
+      <directionalLight intensity={0.5} color={'#ddd6fe'} position={[3, -3, 4]} />
+      <directionalLight intensity={0.65} color={'#d8b4fe'} position={[-2, 4, -20]} />
 
       {/* Spotlights for focused highlights */}
       <spotLight
@@ -87,7 +87,8 @@ const Lighting = () => {
         position={[3, 5, 3]}
         angle={0.3}
         penumbra={0.8}
-        intensity={0.6}
+        intensity={1.9}
+        decay={0}
         color={'#8b5cf6'}
         distance={10}
         castShadow
@@ -97,17 +98,18 @@ const Lighting = () => {
         position={[-3, 4, -3]}
         angle={0.4}
         penumbra={0.7}
-        intensity={0.5}
+        intensity={1.6}
+        decay={0}
         color={'#34d399'}
         distance={12}
         castShadow
       />
 
       {/* Rim light from behind */}
-      <pointLight position={[0, -2, -5]} intensity={0.4} color={'#fafafa'} distance={8} />
+      <pointLight position={[0, -2, -5]} intensity={1.3} decay={0} color={'#fafafa'} distance={8} />
 
       {/* Bottom fill light */}
-      <pointLight position={[0, -4, 2]} intensity={0.2} color={'#ede9fe'} distance={6} />
+      <pointLight position={[0, -4, 2]} intensity={0.65} decay={0} color={'#ede9fe'} distance={6} />
     </>
   )
 }
@@ -137,6 +139,14 @@ export default function Scene({ children, ...props }: ComponentProps<typeof Canv
       </Rig>
       {/* Outside the Rig so their aim tracks the cursor exactly */}
       <CursorSpotlights />
+      {/* The logo material is near-black glossy metal: it lives off reflections,
+       * so give it a procedural environment in brand colors to mirror. */}
+      <Environment resolution={256}>
+        <Lightformer intensity={6} color='#8b5cf6' position={[4, 2, 4]} scale={[4, 2, 1]} />
+        <Lightformer intensity={4} color='#34d399' position={[-4, -1, 3]} scale={[3, 1.5, 1]} />
+        <Lightformer intensity={10} color='#ffffff' position={[0, 4, -3]} scale={[5, 1, 1]} form='ring' />
+        <Lightformer intensity={3} color='#ede9fe' position={[0, -3, 2]} scale={[6, 1, 1]} />
+      </Environment>
       {children}
       <Preload all />
     </Canvas>
