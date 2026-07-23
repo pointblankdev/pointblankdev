@@ -29,12 +29,9 @@ yarn-error.log*
 # vercel
 .vercel
 
-# next-pwa
-/public/workbox-*.js
-/public/sw.js
-
-# prefer yarn than npm
+# stray lockfiles (pnpm is the package manager)
 package-lock.json
+yarn.lock
 
 report.*.json
 

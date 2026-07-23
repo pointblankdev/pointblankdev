@@ -5,7 +5,7 @@ import MemoGithub from './svg/Github'
 import MemoSlack from './svg/Slack'
 
 const Layout = forwardRef(({ children, ...props }: any, ref) => {
-  const localRef = useRef()
+  const localRef = useRef<HTMLDivElement>(null)
 
   useImperativeHandle(ref, () => localRef.current)
 

@@ -13,15 +13,14 @@ const PointBlankDevComponent = () => {
 }
 
 const Logo = () => {
-  let t = 0
   const mesh = {
     position: [0, 0, 2],
     rotation: [Math.PI / 4, 0, 0],
     scale: [1, 1, 1],
   }
   const logo = useRef({} as any)
-  useFrame((state, delta) => {
-    t += delta
+  useFrame((state) => {
+    const t = state.clock.getElapsedTime()
     logo.current.position.y = Math.sin(t) * 0.03
     logo.current.rotation.x = 0.13 + Math.PI / 4 + Math.cos(t / 3) * 0.1
     logo.current.rotation.y = Math.sin(t / 4) * 0.01
