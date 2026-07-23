@@ -26,22 +26,23 @@ const DebugBridge = () => {
 const Lighting = () => {
   const keyLight = useRef<THREE.DirectionalLight>(null)
 
-  // The logo faces the camera, so the key must sit near the camera axis
-  // (high front) for its light to reflect into view — overhead would graze.
+  // Mysterious base state: barely-there key and ambient. The form is only
+  // fully revealed by the white cursor spotlights; the sweep lights below
+  // rake edges as they orbit past.
   const key = useControls('key light', {
     position: [2, 3, 7],
-    intensity: { value: 2.2, min: 0, max: 10 },
+    intensity: { value: 0.6, min: 0, max: 10 },
     color: '#7c3aed',
   })
   const amb = useControls('ambient', {
-    intensity: { value: 1.5, min: 0, max: 10 },
+    intensity: { value: 0.35, min: 0, max: 10 },
     color: '#ede9fe',
   })
 
   useFrame((state) => {
     if (keyLight.current) {
       // Gentle breathing so the scene feels alive without moving any light
-      keyLight.current.intensity = key.intensity + Math.sin(state.clock.getElapsedTime() * 0.4) * 0.2
+      keyLight.current.intensity = key.intensity + Math.sin(state.clock.getElapsedTime() * 0.4) * 0.1
     }
   })
 
@@ -61,37 +62,40 @@ const Lighting = () => {
       {/* Soft ambient base */}
       <ambientLight intensity={amb.intensity} color={amb.color} />
 
-      {/* Static fills and accents, all front hemisphere */}
-      <directionalLight intensity={0.9} color={'#c4b5fd'} position={[4, 3, 3]} />
-      <directionalLight intensity={0.5} color={'#ddd6fe'} position={[3, -3, 4]} />
-      <directionalLight intensity={0.6} color={'#34d399'} position={[5, -2, 4]} />
-
-      {/* Bottom fill glow */}
-      <pointLight position={[0, -4, 2]} intensity={0.65} decay={0} color={'#ede9fe'} distance={6} />
+      {/* Faint fills so the silhouette is just barely separable from black */}
+      <directionalLight intensity={0.25} color={'#c4b5fd'} position={[4, 3, 3]} />
+      <directionalLight intensity={0.2} color={'#34d399'} position={[5, -2, 4]} />
+      <pointLight position={[0, -4, 2]} intensity={0.3} decay={0} color={'#ede9fe'} distance={6} />
     </>
   )
 }
 
-// Static neon accent spots from four different quadrants: each grazes a
-// different set of bevel edges on the face-on extrusion, adding dimension.
-// All share one target on the logo plane.
-const AccentSpots = () => {
+// Neon sweep lights: orbit the full circle around the logo at different
+// slow speeds. As each passes the front it rakes across edges of the shape,
+// hinting at the form without revealing it — then slips behind and vanishes.
+const SweepLights = () => {
+  const s1 = useRef<THREE.SpotLight>(null)
+  const s2 = useRef<THREE.SpotLight>(null)
+  const s3 = useRef<THREE.SpotLight>(null)
   const target = useMemo(() => {
     const o = new THREE.Object3D()
     o.position.set(0, 0, 2)
     return o
   }, [])
+
+  useFrame((state) => {
+    const t = state.clock.getElapsedTime()
+    if (s1.current) s1.current.position.set(Math.sin(t * 0.11) * 5, 2.5, 2 + Math.cos(t * 0.11) * 5)
+    if (s2.current) s2.current.position.set(Math.sin(t * 0.17 + 2) * 5, -1.5, 2 + Math.cos(t * 0.17 + 2) * 5)
+    if (s3.current) s3.current.position.set(Math.sin(t * 0.07 + 4) * 6, 4, 2 + Math.cos(t * 0.07 + 4) * 6)
+  })
+
   return (
     <>
       <primitive object={target} />
-      {/* Neon pink, upper-left */}
-      <spotLight target={target} position={[-4, 4, 4]} angle={0.5} penumbra={1} decay={0} intensity={4} color='#ff2d95' />
-      {/* Neon green, lower-right */}
-      <spotLight target={target} position={[5, -2, 3]} angle={0.5} penumbra={1} decay={0} intensity={3.5} color='#39ff14' />
-      {/* Soft pink rim, lower-left, grazing */}
-      <spotLight target={target} position={[-5, -3, 2.5]} angle={0.6} penumbra={1} decay={0} intensity={3} color='#ff6ec7' />
-      {/* Brand green, upper-right, grazing */}
-      <spotLight target={target} position={[4, 5, 2]} angle={0.55} penumbra={1} decay={0} intensity={3.5} color='#34d399' />
+      <spotLight ref={s1} target={target} angle={0.45} penumbra={1} decay={0} intensity={2} color='#ff2d95' />
+      <spotLight ref={s2} target={target} angle={0.45} penumbra={1} decay={0} intensity={1.8} color='#39ff14' />
+      <spotLight ref={s3} target={target} angle={0.5} penumbra={1} decay={0} intensity={2.2} color='#8b5cf6' />
     </>
   )
 }
@@ -122,15 +126,15 @@ export default function Scene({ children, ...props }: ComponentProps<typeof Canv
       </Rig>
       {/* Outside the Rig so their aim tracks the cursor exactly */}
       <CursorSpotlights />
-      <AccentSpots />
+      <SweepLights />
       {/* The logo material is near-black glossy metal: it lives off reflections,
        * so give it a procedural environment in brand colors to mirror. */}
       <Environment resolution={256}>
-        <Lightformer intensity={6} color='#8b5cf6' position={[4, 2, 4]} scale={[4, 2, 1]} />
-        <Lightformer intensity={4} color='#34d399' position={[-4, -1, 3]} scale={[3, 1.5, 1]} />
-        <Lightformer intensity={10} color='#ffffff' position={[0, 4, -3]} scale={[5, 1, 1]} form='ring' />
-        <Lightformer intensity={3} color='#ede9fe' position={[0, -3, 2]} scale={[6, 1, 1]} />
-        <Lightformer intensity={2.5} color='#ff2d95' position={[-3, 3, 4]} scale={[2, 1, 1]} />
+        <Lightformer intensity={1.5} color='#8b5cf6' position={[4, 2, 4]} scale={[4, 2, 1]} />
+        <Lightformer intensity={1} color='#34d399' position={[-4, -1, 3]} scale={[3, 1.5, 1]} />
+        <Lightformer intensity={2.5} color='#ffffff' position={[0, 4, -3]} scale={[5, 1, 1]} form='ring' />
+        <Lightformer intensity={0.8} color='#ede9fe' position={[0, -3, 2]} scale={[6, 1, 1]} />
+        <Lightformer intensity={0.8} color='#ff2d95' position={[-3, 3, 4]} scale={[2, 1, 1]} />
       </Environment>
       {children}
       <Preload all />

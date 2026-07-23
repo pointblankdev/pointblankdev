@@ -54,10 +54,10 @@ const Logo = () => {
   // Metalness ~0.65 (not 0.9): a full mirror only shows lights sitting on
   // the camera axis — off-axis colored accent spots need diffuse response.
   const mat = useControls('material', {
-    color: '#5d4d85',
-    metalness: { value: 0.65, min: 0, max: 1 },
-    roughness: { value: 0.32, min: 0, max: 1 },
-    envMapIntensity: { value: 1.2, min: 0, max: 10 },
+    color: '#4c3a75',
+    metalness: { value: 0.75, min: 0, max: 1 },
+    roughness: { value: 0.3, min: 0, max: 1 },
+    envMapIntensity: { value: 0.6, min: 0, max: 10 },
   })
   const material = useMemo(() => {
     const m = (materials['SVGMat.001'] as THREE.MeshStandardMaterial).clone()
