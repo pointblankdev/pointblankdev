@@ -5,10 +5,10 @@ import Header from '@/config'
 import Layout from '@/components/dom/Layout'
 import '@/styles/index.css'
 
-const Scene = dynamic(() => import('@/components/canvas/Scene'), { ssr: true })
+const Scene = dynamic(() => import('@/components/canvas/Scene'), { ssr: false })
 
 export default function App({ Component, pageProps = { title: 'index' } }) {
-  const ref = useRef()
+  const ref = useRef<HTMLDivElement>(null)
   return (
     <>
       <Header title={pageProps.title} />
