@@ -36,7 +36,7 @@
     "typescript": "^4.9.5"
   },
   "scripts": {
-    "lint": "yarn prettier && yarn eslint",
+    "lint": "pnpm prettier && pnpm eslint",
     "eslint": "next lint --fix --dir src",
     "prettier": "prettier --list-different \"./src/**/*.{ts,tsx,md}\"",
     "dev": "next dev",
