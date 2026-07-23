@@ -12,13 +12,18 @@ type InteractionState = {
   hoveredCard: string | null
   /** Monotonic counter; increments on every click pulse. */
   pulseCount: number
+  /** Camera view index, one per service card; 0 is the default framing. */
+  view: number
   setHoveredCard: (card: string | null) => void
   triggerPulse: () => void
+  setView: (view: number) => void
 }
 
 export const useInteraction = create<InteractionState>((set) => ({
   hoveredCard: null,
   pulseCount: 0,
+  view: 0,
   setHoveredCard: (hoveredCard) => set({ hoveredCard }),
   triggerPulse: () => set((s) => ({ pulseCount: s.pulseCount + 1 })),
+  setView: (view) => set({ view }),
 }))

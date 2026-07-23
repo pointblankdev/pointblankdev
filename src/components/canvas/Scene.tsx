@@ -6,6 +6,8 @@ import { useRef, type ComponentProps } from 'react'
 import Rig from './Rig'
 import CursorSpotlights from './CursorSpotlights'
 import { useControls } from 'leva'
+import { easing } from 'maath'
+import { useInteraction } from '@/store'
 
 // Dev-only: expose the r3f state on window so the scene can be inspected
 // and lights toggled from the browser console / automation.
@@ -100,6 +102,24 @@ const SweepLights = () => {
   )
 }
 
+// One camera vantage per service card; index 0 is the default framing.
+// Clicking a card glides the camera there, changing the whole scene's mood.
+const CAMERA_VIEWS: [number, number, number][] = [
+  [0, 0, 5], // default: straight on
+  [-2.5, -1.5, 4.5], // low-left: looking up, imposing
+  [2.5, 2, 5.5], // high-right: looking down, overview
+  [0.8, 0.5, 3.2], // close-up: intimate
+]
+
+const CameraRig = () => {
+  useFrame((state, delta) => {
+    const { view } = useInteraction.getState()
+    easing.damp3(state.camera.position, CAMERA_VIEWS[view] ?? CAMERA_VIEWS[0], 0.6, delta)
+    state.camera.lookAt(0, 0, 2)
+  })
+  return null
+}
+
 export default function Scene({ children, ...props }: ComponentProps<typeof Canvas>) {
   // Everything defined in here will persist between route changes, only children are swapped
   return (
@@ -120,6 +140,7 @@ export default function Scene({ children, ...props }: ComponentProps<typeof Canv
     >
       <AdaptiveDpr pixelated />
       <DebugBridge />
+      <CameraRig />
       {/* Slow, wide tilt of the whole light rig gives a parallax feel */}
       <Rig intensity={0.3} smoothing={0.8}>
         <Lighting />

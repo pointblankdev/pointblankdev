@@ -44,21 +44,25 @@ export default function Page() {
             <ServiceCard
               icon={<Code className="w-6 h-6 text-primary" />}
               title="AI Integration"
+              view={0}
               description="Smart automation and AI-powered features for your business"
             />
             <ServiceCard
               icon={<Globe className="w-6 h-6 text-primary" />}
               title="Full-Stack Development"
+              view={1}
               description="Complete web solutions from frontend to backend"
             />
             <ServiceCard
               icon={<Database className="w-6 h-6 text-primary" />}
               title="E-commerce Solutions"
+              view={2}
               description="Custom online stores and payment processing systems"
             />
             <ServiceCard
               icon={<Shield className="w-6 h-6 text-primary" />}
               title="Security Consulting"
+              view={3}
               description="Protect your systems and digital assets"
               className="hidden sm:block"
             />
@@ -89,21 +93,26 @@ function ServiceCard({
   icon,
   title,
   description,
+  view,
   className = '',
 }: {
   icon: React.ReactNode
   title: string
   description: string
+  view: number
   className?: string
 }) {
-    const { setHoveredCard, triggerPulse } = useInteraction.getState()
+    const { setHoveredCard, triggerPulse, setView } = useInteraction.getState()
     return (
       <div
         className={`p-4 rounded-lg border border-muted-foreground/10 bg-foreground/30 backdrop-blur-sm
   hover:bg-foreground/50 transition-colors group pointer-events-auto cursor-pointer select-none ${className}`}
         onMouseEnter={() => setHoveredCard(title)}
         onMouseLeave={() => setHoveredCard(null)}
-        onClick={triggerPulse}>
+        onClick={() => {
+          setView(view)
+          triggerPulse()
+        }}>
         <div className="flex items-start space-x-3">
           <div className="p-2 rounded-md bg-primary/10 group-hover:bg-primary/20 transition-colors">
             {icon}
