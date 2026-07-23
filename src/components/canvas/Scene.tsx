@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Preload, AdaptiveDpr, Environment, Lightformer } from '@react-three/drei'
 import { useRef, type ComponentProps } from 'react'
 import Rig from './Rig'
@@ -30,11 +30,11 @@ const Lighting = () => {
   // (high front) for its light to reflect into view — overhead would graze.
   const key = useControls('key light', {
     position: [2, 3, 7],
-    intensity: { value: 2.8, min: 0, max: 10 },
+    intensity: { value: 2.2, min: 0, max: 10 },
     color: '#7c3aed',
   })
   const amb = useControls('ambient', {
-    intensity: { value: 1.9, min: 0, max: 10 },
+    intensity: { value: 1.5, min: 0, max: 10 },
     color: '#ede9fe',
   })
 
@@ -72,6 +72,30 @@ const Lighting = () => {
   )
 }
 
+// Static neon accent spots from four different quadrants: each grazes a
+// different set of bevel edges on the face-on extrusion, adding dimension.
+// All share one target on the logo plane.
+const AccentSpots = () => {
+  const target = useMemo(() => {
+    const o = new THREE.Object3D()
+    o.position.set(0, 0, 2)
+    return o
+  }, [])
+  return (
+    <>
+      <primitive object={target} />
+      {/* Neon pink, upper-left */}
+      <spotLight target={target} position={[-4, 4, 4]} angle={0.5} penumbra={1} decay={0} intensity={4} color='#ff2d95' />
+      {/* Neon green, lower-right */}
+      <spotLight target={target} position={[5, -2, 3]} angle={0.5} penumbra={1} decay={0} intensity={3.5} color='#39ff14' />
+      {/* Soft pink rim, lower-left, grazing */}
+      <spotLight target={target} position={[-5, -3, 2.5]} angle={0.6} penumbra={1} decay={0} intensity={3} color='#ff6ec7' />
+      {/* Brand green, upper-right, grazing */}
+      <spotLight target={target} position={[4, 5, 2]} angle={0.55} penumbra={1} decay={0} intensity={3.5} color='#34d399' />
+    </>
+  )
+}
+
 export default function Scene({ children, ...props }: ComponentProps<typeof Canvas>) {
   // Everything defined in here will persist between route changes, only children are swapped
   return (
@@ -98,6 +122,7 @@ export default function Scene({ children, ...props }: ComponentProps<typeof Canv
       </Rig>
       {/* Outside the Rig so their aim tracks the cursor exactly */}
       <CursorSpotlights />
+      <AccentSpots />
       {/* The logo material is near-black glossy metal: it lives off reflections,
        * so give it a procedural environment in brand colors to mirror. */}
       <Environment resolution={256}>
@@ -105,6 +130,7 @@ export default function Scene({ children, ...props }: ComponentProps<typeof Canv
         <Lightformer intensity={4} color='#34d399' position={[-4, -1, 3]} scale={[3, 1.5, 1]} />
         <Lightformer intensity={10} color='#ffffff' position={[0, 4, -3]} scale={[5, 1, 1]} form='ring' />
         <Lightformer intensity={3} color='#ede9fe' position={[0, -3, 2]} scale={[6, 1, 1]} />
+        <Lightformer intensity={2.5} color='#ff2d95' position={[-3, 3, 4]} scale={[2, 1, 1]} />
       </Environment>
       {children}
       <Preload all />

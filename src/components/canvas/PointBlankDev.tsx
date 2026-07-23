@@ -51,11 +51,13 @@ const Logo = () => {
   // tint is its base color, so black metal reflects nothing. Clone (the
   // useGLTF material is a shared cache) and re-tint to a dark brand purple
   // so the logo mirrors the environment and lights. Tunable via ?debug.
+  // Metalness ~0.65 (not 0.9): a full mirror only shows lights sitting on
+  // the camera axis — off-axis colored accent spots need diffuse response.
   const mat = useControls('material', {
-    color: '#4c3a75',
-    metalness: { value: 0.9, min: 0, max: 1 },
-    roughness: { value: 0.22, min: 0, max: 1 },
-    envMapIntensity: { value: 1.5, min: 0, max: 10 },
+    color: '#5d4d85',
+    metalness: { value: 0.65, min: 0, max: 1 },
+    roughness: { value: 0.32, min: 0, max: 1 },
+    envMapIntensity: { value: 1.2, min: 0, max: 10 },
   })
   const material = useMemo(() => {
     const m = (materials['SVGMat.001'] as THREE.MeshStandardMaterial).clone()
@@ -74,4 +76,6 @@ const Logo = () => {
     </group>
   )
 }
+useGLTF.preload('point-blank-dev.glb', true)
+
 export default PointBlankDevComponent
