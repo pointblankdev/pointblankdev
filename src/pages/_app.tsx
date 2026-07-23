@@ -8,6 +8,8 @@ import Layout from '@/components/dom/Layout'
 import '@/styles/index.css'
 
 const Scene = dynamic(() => import('@/components/canvas/Scene'), { ssr: false })
+// Lighting/material tuning panel — only shown when the URL has ?debug
+const Leva = dynamic(() => import('leva').then((m) => m.Leva), { ssr: false })
 
 type PageWithCanvas = NextPage<AppPageProps> & {
   canvas?: (pageProps: AppPageProps) => ReactNode
@@ -32,9 +34,12 @@ export default function App({ Component, pageProps = { title: 'index' } }: AppPr
          * Setting the event source to a shared parent allows both the dom and the canvas to receive events.
          * Since the event source is now shared, the canvas would block events, we prevent that with pointerEvents: none. */}
         {Component?.canvas && (
-          <Scene className='pointer-events-none' eventSource={ref} eventPrefix='client'>
-            {Component.canvas(pageProps)}
-          </Scene>
+          <>
+            <Leva hidden={typeof window === 'undefined' || !window.location.search.includes('debug')} />
+            <Scene className='pointer-events-none' eventSource={ref} eventPrefix='client'>
+              {Component.canvas(pageProps)}
+            </Scene>
+          </>
         )}
       </Layout>
       <Analytics />

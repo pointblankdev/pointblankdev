@@ -1,6 +1,7 @@
-import { Suspense, useLayoutEffect, useRef } from 'react'
+import { Suspense, useMemo, useRef } from 'react'
 import { useGLTF } from '@react-three/drei'
 import { useFrame, useThree } from '@react-three/fiber'
+import { useControls } from 'leva'
 import type * as THREE from 'three'
 import Rig from './Rig'
 import { useInteraction } from '@/store'
@@ -44,16 +45,24 @@ const Logo = () => {
     logo.current.scale.setScalar(baseScale * (1 + 0.08 * Math.sin(pulse.current.strength * Math.PI)))
   })
   const { nodes, materials } = useGLTF('point-blank-dev.glb', true)
-  const material = materials['SVGMat.001'] as THREE.MeshStandardMaterial
   // The GLB ships with a PURE BLACK base color — and a metal's reflection
-  // tint is its base color, so black metal reflects nothing. Re-tint to a
-  // dark brand purple so the logo mirrors the environment and lights.
-  useLayoutEffect(() => {
-    material.color.set('#4c3a75')
-    material.metalness = 0.9
-    material.roughness = 0.22
-    material.envMapIntensity = 1.5
-  }, [material])
+  // tint is its base color, so black metal reflects nothing. Clone (the
+  // useGLTF material is a shared cache) and re-tint to a dark brand purple
+  // so the logo mirrors the environment and lights. Tunable via ?debug.
+  const mat = useControls('material', {
+    color: '#4c3a75',
+    metalness: { value: 0.9, min: 0, max: 1 },
+    roughness: { value: 0.22, min: 0, max: 1 },
+    envMapIntensity: { value: 1.5, min: 0, max: 10 },
+  })
+  const material = useMemo(() => {
+    const m = (materials['SVGMat.001'] as THREE.MeshStandardMaterial).clone()
+    m.color.set(mat.color)
+    m.metalness = mat.metalness
+    m.roughness = mat.roughness
+    m.envMapIntensity = mat.envMapIntensity
+    return m
+  }, [materials, mat.color, mat.metalness, mat.roughness, mat.envMapIntensity])
   return (
     <group ref={logo} rotation={[Math.PI / 4, 0, 0]} position={[0, 0, 2]}>
       <mesh material={material} geometry={(nodes.Curve1 as THREE.Mesh).geometry} />

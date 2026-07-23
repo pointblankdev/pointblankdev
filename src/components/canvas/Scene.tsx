@@ -5,6 +5,7 @@ import { Preload, AdaptiveDpr, Environment, Lightformer } from '@react-three/dre
 import { useRef, type ComponentProps } from 'react'
 import Rig from './Rig'
 import CursorSpotlights from './CursorSpotlights'
+import { useControls } from 'leva'
 
 // Dev-only: expose the r3f state on window so the scene can be inspected
 // and lights toggled from the browser console / automation.
@@ -18,7 +19,9 @@ const DebugBridge = () => {
   return null
 }
 
-// Multi-light setup with animated positions and intensities
+// Multi-light setup with animated positions and intensities.
+// All values are tunable at runtime via the ?debug Leva panel; the defaults
+// here ARE the production values.
 const Lighting = () => {
   const primaryLight = useRef<THREE.DirectionalLight>(null)
   const secondaryLight = useRef<THREE.DirectionalLight>(null)
@@ -26,18 +29,57 @@ const Lighting = () => {
   const spotLight1 = useRef<THREE.SpotLight>(null)
   const spotLight2 = useRef<THREE.SpotLight>(null)
 
+  const { animate } = useControls('animation', { animate: true })
+  const key = useControls('key light', {
+    position: [-5, 2, 5],
+    intensity: { value: 2.6, min: 0, max: 10 },
+    color: '#7c3aed',
+  })
+  const amb = useControls('ambient', {
+    intensity: { value: 1.9, min: 0, max: 10 },
+    color: '#ede9fe',
+  })
+  const spot1 = useControls('spot 1 (purple)', {
+    position: [3, 5, 3],
+    intensity: { value: 1.9, min: 0, max: 10 },
+    angle: { value: 0.3, min: 0.05, max: 1.5 },
+    distance: { value: 10, min: 0, max: 40 },
+    color: '#8b5cf6',
+  })
+  const spot2 = useControls('spot 2 (green)', {
+    position: [-3, 4, -3],
+    intensity: { value: 1.6, min: 0, max: 10 },
+    angle: { value: 0.4, min: 0.05, max: 1.5 },
+    distance: { value: 12, min: 0, max: 40 },
+    color: '#34d399',
+  })
+
   useFrame((state) => {
+    if (!animate) {
+      // Sliders own the rig; just keep the spots aimed at the logo
+      if (spotLight1.current) {
+        spotLight1.current.target.position.set(0, 0, 2)
+        spotLight1.current.target.updateMatrixWorld()
+      }
+      if (spotLight2.current) {
+        spotLight2.current.target.position.set(0, 0, 2)
+        spotLight2.current.target.updateMatrixWorld()
+      }
+      return
+    }
     const t = state.clock.getElapsedTime()
 
     if (primaryLight.current) {
+      // Pan left-right across the front of the asset — the key light
       primaryLight.current.position.x = Math.sin(t * 0.2) * 5
-      primaryLight.current.position.z = Math.cos(t * 0.2) * 5
-      primaryLight.current.intensity = 2.4 + Math.sin(t * 0.5) * 0.3
+      primaryLight.current.position.z = 5
+      primaryLight.current.intensity = 2.6 + Math.sin(t * 0.5) * 0.3
     }
 
     if (secondaryLight.current) {
+      // Low green counter-sweep, front hemisphere only
       secondaryLight.current.position.x = Math.sin(t * 0.15 + Math.PI) * 4
-      secondaryLight.current.position.z = Math.cos(t * 0.15 + Math.PI) * 4
+      secondaryLight.current.position.z = 4
       secondaryLight.current.intensity = 0.65 + Math.sin(t * 0.7) * 0.15
     }
 
@@ -49,14 +91,14 @@ const Lighting = () => {
 
     if (spotLight1.current) {
       spotLight1.current.position.x = Math.sin(t * 0.1) * 3
-      spotLight1.current.position.z = Math.cos(t * 0.1) * 3
+      spotLight1.current.position.z = 3 + Math.cos(t * 0.1) * 1.5
       spotLight1.current.target.position.set(Math.sin(t * 0.2), 0, Math.cos(t * 0.2))
       spotLight1.current.target.updateMatrixWorld()
     }
 
     if (spotLight2.current) {
       spotLight2.current.position.x = Math.sin(t * 0.15 + Math.PI) * 4
-      spotLight2.current.position.z = Math.cos(t * 0.15 + Math.PI) * 4
+      spotLight2.current.position.z = 3 + Math.cos(t * 0.15 + Math.PI) * 1.5
       spotLight2.current.target.position.set(Math.sin(t * 0.3 + Math.PI), 0, Math.cos(t * 0.3 + Math.PI))
       spotLight2.current.target.updateMatrixWorld()
     }
@@ -67,19 +109,19 @@ const Lighting = () => {
       {/* Main brand light - purple */}
       <directionalLight
         ref={primaryLight}
-        intensity={2.4}
-        color={'#7c3aed'}
-        position={[-5, -5, -5]}
+        intensity={key.intensity}
+        color={key.color}
+        position={key.position}
         castShadow
         shadow-mapSize-width={1024}
         shadow-mapSize-height={1024}
       />
 
       {/* Secondary brand light - green */}
-      <directionalLight ref={secondaryLight} intensity={0.65} color={'#16a34a'} position={[-5, -2, -5]} />
+      <directionalLight ref={secondaryLight} intensity={0.65} color={'#16a34a'} position={[-5, -2, 4]} />
 
       {/* Soft ambient lighting */}
-      <ambientLight intensity={1.9} color={'#ede9fe'} />
+      <ambientLight intensity={amb.intensity} color={amb.color} />
 
       {/* Accent directional lights */}
       <directionalLight ref={accentLight1} intensity={0.95} color={'#c4b5fd'} position={[6, 3, 2]} />
@@ -88,24 +130,24 @@ const Lighting = () => {
       {/* Spotlights for focused highlights */}
       <spotLight
         ref={spotLight1}
-        position={[3, 5, 3]}
-        angle={0.3}
+        position={spot1.position}
+        angle={spot1.angle}
         penumbra={0.8}
-        intensity={1.9}
+        intensity={spot1.intensity}
         decay={0}
-        color={'#8b5cf6'}
-        distance={10}
+        color={spot1.color}
+        distance={spot1.distance}
         castShadow
       />
       <spotLight
         ref={spotLight2}
-        position={[-3, 4, -3]}
-        angle={0.4}
+        position={spot2.position}
+        angle={spot2.angle}
         penumbra={0.7}
-        intensity={1.6}
+        intensity={spot2.intensity}
         decay={0}
-        color={'#34d399'}
-        distance={12}
+        color={spot2.color}
+        distance={spot2.distance}
         castShadow
       />
 
