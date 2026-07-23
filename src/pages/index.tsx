@@ -1,10 +1,6 @@
 import dynamic from 'next/dynamic'
-import Instructions from '@/components/dom/Instructions'
 import Image from 'next/image'
 import PBDLogo from 'public/pbd-logo-no-icon.png'
-import Link from 'next/link'
-import MemoDiscord from '@/components/dom/svg/Discord'
-import MemoGithub from '@/components/dom/svg/Github'
 import { Code, Database, Globe, Shield } from 'lucide-react'
 
 // Dynamic import is used to prevent a payload when the website starts, that includes threejs, r3f etc..

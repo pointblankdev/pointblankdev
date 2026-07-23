@@ -1,8 +1,7 @@
 // @ts-nocheck
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { OrbitControls, Preload, AdaptiveDpr } from '@react-three/drei'
+import { Preload, AdaptiveDpr } from '@react-three/drei'
 import { useEffect, useRef, useState } from 'react'
-import { Glitch } from '@react-three/postprocessing'
 
 // Performance optimization component
 const PerformanceOptimizer = () => {
