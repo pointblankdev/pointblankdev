@@ -38,7 +38,9 @@ const Logo = () => {
 
     // Idle bob and wobble
     logo.current.position.y = Math.sin(t) * 0.03
-    logo.current.rotation.x = 0.13 + Math.PI / 4 + Math.cos(t / 3) * 0.1
+    // The GLB is a flat SVG extrusion lying in the XZ plane: PI/2 stands it
+    // up to face the camera directly. Keep only a gentle idle wobble.
+    logo.current.rotation.x = Math.PI / 2 + Math.cos(t / 3) * 0.05
     logo.current.rotation.y = Math.sin(t / 4) * 0.01
     logo.current.rotation.z = Math.sin(t) * 0.01
 
@@ -64,7 +66,7 @@ const Logo = () => {
     return m
   }, [materials, mat.color, mat.metalness, mat.roughness, mat.envMapIntensity])
   return (
-    <group ref={logo} rotation={[Math.PI / 4, 0, 0]} position={[0, 0, 2]}>
+    <group ref={logo} rotation={[0, 0, 0]} position={[0, 0, 2]}>
       <mesh material={material} geometry={(nodes.Curve1 as THREE.Mesh).geometry} />
       <mesh material={material} geometry={(nodes.Curve2 as THREE.Mesh).geometry} />
       <mesh material={material} geometry={(nodes.Curve3 as THREE.Mesh).geometry} />

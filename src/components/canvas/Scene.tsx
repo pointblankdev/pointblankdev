@@ -19,96 +19,37 @@ const DebugBridge = () => {
   return null
 }
 
-// Multi-light setup with animated positions and intensities.
-// All values are tunable at runtime via the ?debug Leva panel; the defaults
-// here ARE the production values.
+// Deterministic light rig: fixed, composed positions — the logo looks the
+// same on every load. Motion comes only from pointer-driven effects
+// (Rig tilt, CursorSpotlights) and a subtle breathing on the key light.
+// Key/ambient remain tunable via the ?debug Leva panel.
 const Lighting = () => {
-  const primaryLight = useRef<THREE.DirectionalLight>(null)
-  const secondaryLight = useRef<THREE.DirectionalLight>(null)
-  const accentLight1 = useRef<THREE.DirectionalLight>(null)
-  const spotLight1 = useRef<THREE.SpotLight>(null)
-  const spotLight2 = useRef<THREE.SpotLight>(null)
+  const keyLight = useRef<THREE.DirectionalLight>(null)
 
-  const { animate } = useControls('animation', { animate: true })
+  // The logo faces the camera, so the key must sit near the camera axis
+  // (high front) for its light to reflect into view — overhead would graze.
   const key = useControls('key light', {
-    position: [-5, 2, 5],
-    intensity: { value: 2.6, min: 0, max: 10 },
+    position: [2, 3, 7],
+    intensity: { value: 2.8, min: 0, max: 10 },
     color: '#7c3aed',
   })
   const amb = useControls('ambient', {
     intensity: { value: 1.9, min: 0, max: 10 },
     color: '#ede9fe',
   })
-  const spot1 = useControls('spot 1 (purple)', {
-    position: [3, 5, 3],
-    intensity: { value: 1.9, min: 0, max: 10 },
-    angle: { value: 0.3, min: 0.05, max: 1.5 },
-    distance: { value: 10, min: 0, max: 40 },
-    color: '#8b5cf6',
-  })
-  const spot2 = useControls('spot 2 (green)', {
-    position: [-3, 4, -3],
-    intensity: { value: 1.6, min: 0, max: 10 },
-    angle: { value: 0.4, min: 0.05, max: 1.5 },
-    distance: { value: 12, min: 0, max: 40 },
-    color: '#34d399',
-  })
 
   useFrame((state) => {
-    if (!animate) {
-      // Sliders own the rig; just keep the spots aimed at the logo
-      if (spotLight1.current) {
-        spotLight1.current.target.position.set(0, 0, 2)
-        spotLight1.current.target.updateMatrixWorld()
-      }
-      if (spotLight2.current) {
-        spotLight2.current.target.position.set(0, 0, 2)
-        spotLight2.current.target.updateMatrixWorld()
-      }
-      return
-    }
-    const t = state.clock.getElapsedTime()
-
-    if (primaryLight.current) {
-      // Pan left-right across the front of the asset — the key light
-      primaryLight.current.position.x = Math.sin(t * 0.2) * 5
-      primaryLight.current.position.z = 5
-      primaryLight.current.intensity = 2.6 + Math.sin(t * 0.5) * 0.3
-    }
-
-    if (secondaryLight.current) {
-      // Low green counter-sweep, front hemisphere only
-      secondaryLight.current.position.x = Math.sin(t * 0.15 + Math.PI) * 4
-      secondaryLight.current.position.z = 4
-      secondaryLight.current.intensity = 0.65 + Math.sin(t * 0.7) * 0.15
-    }
-
-    if (accentLight1.current) {
-      accentLight1.current.position.x = Math.sin(t * 0.3) * 6
-      accentLight1.current.position.y = Math.cos(t * 0.3) * 2 + 3
-      accentLight1.current.intensity = 0.95 + Math.sin(t * 0.6) * 0.3
-    }
-
-    if (spotLight1.current) {
-      spotLight1.current.position.x = Math.sin(t * 0.1) * 3
-      spotLight1.current.position.z = 3 + Math.cos(t * 0.1) * 1.5
-      spotLight1.current.target.position.set(Math.sin(t * 0.2), 0, Math.cos(t * 0.2))
-      spotLight1.current.target.updateMatrixWorld()
-    }
-
-    if (spotLight2.current) {
-      spotLight2.current.position.x = Math.sin(t * 0.15 + Math.PI) * 4
-      spotLight2.current.position.z = 3 + Math.cos(t * 0.15 + Math.PI) * 1.5
-      spotLight2.current.target.position.set(Math.sin(t * 0.3 + Math.PI), 0, Math.cos(t * 0.3 + Math.PI))
-      spotLight2.current.target.updateMatrixWorld()
+    if (keyLight.current) {
+      // Gentle breathing so the scene feels alive without moving any light
+      keyLight.current.intensity = key.intensity + Math.sin(state.clock.getElapsedTime() * 0.4) * 0.2
     }
   })
 
   return (
     <>
-      {/* Main brand light - purple */}
+      {/* Key: purple, directly overhead — see note above */}
       <directionalLight
-        ref={primaryLight}
+        ref={keyLight}
         intensity={key.intensity}
         color={key.color}
         position={key.position}
@@ -117,41 +58,15 @@ const Lighting = () => {
         shadow-mapSize-height={1024}
       />
 
-      {/* Secondary brand light - green */}
-      <directionalLight ref={secondaryLight} intensity={0.65} color={'#16a34a'} position={[-5, -2, 4]} />
-
-      {/* Soft ambient lighting */}
+      {/* Soft ambient base */}
       <ambientLight intensity={amb.intensity} color={amb.color} />
 
-      {/* Accent directional lights */}
-      <directionalLight ref={accentLight1} intensity={0.95} color={'#c4b5fd'} position={[6, 3, 2]} />
+      {/* Static fills and accents, all front hemisphere */}
+      <directionalLight intensity={0.9} color={'#c4b5fd'} position={[4, 3, 3]} />
       <directionalLight intensity={0.5} color={'#ddd6fe'} position={[3, -3, 4]} />
+      <directionalLight intensity={0.6} color={'#34d399'} position={[5, -2, 4]} />
 
-      {/* Spotlights for focused highlights */}
-      <spotLight
-        ref={spotLight1}
-        position={spot1.position}
-        angle={spot1.angle}
-        penumbra={0.8}
-        intensity={spot1.intensity}
-        decay={0}
-        color={spot1.color}
-        distance={spot1.distance}
-        castShadow
-      />
-      <spotLight
-        ref={spotLight2}
-        position={spot2.position}
-        angle={spot2.angle}
-        penumbra={0.7}
-        intensity={spot2.intensity}
-        decay={0}
-        color={spot2.color}
-        distance={spot2.distance}
-        castShadow
-      />
-
-      {/* Bottom fill light */}
+      {/* Bottom fill glow */}
       <pointLight position={[0, -4, 2]} intensity={0.65} decay={0} color={'#ede9fe'} distance={6} />
     </>
   )
