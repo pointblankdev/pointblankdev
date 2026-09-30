@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import PBDLogo from 'public/pbd-logo-no-icon.png'
@@ -77,11 +78,10 @@ export default function Page() {
 
       {/* Footer */}
       <footer className="py-4 px-8 flex justify-between items-center text-xs text-muted-foreground">
-        <div>© {new Date().getFullYear()} Point Blank Dev, LLC. All rights reserved.</div>
-        <div className="flex gap-4">
-          {/* <Link href="#" className="hover:text-foreground">Privacy</Link>
-          <Link href="#" className="hover:text-foreground">Terms</Link>
-          <Link href="#" className="hover:text-foreground">Contact</Link> */}
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+          <span>© {new Date().getFullYear()} Point Blank Dev, LLC. All rights reserved.</span>
+          <Link href="/privacy" className="underline-offset-4 hover:underline hover:text-foreground">Privacy</Link>
+          <a href="mailto:ross@pointblankdev.com" className="underline-offset-4 hover:underline hover:text-foreground">Contact</a>
         </div>
       </footer>
     </div>
