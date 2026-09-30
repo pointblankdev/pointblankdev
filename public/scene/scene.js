@@ -635,7 +635,9 @@
   const applyFrame = () => {
     camera.setViewOffset(innerWidth, innerHeight, framing.x, framing.y, innerWidth, innerHeight);
     camera.fov = framing.fov; camera.updateProjectionMatrix();
-    const k = pointScale(); logoPointMats.forEach((m) => { m.uniforms.uScale.value = k; });
+    // Tiny logos crowd together on small screens, so they shrink there
+    const small = innerWidth <= 820 || innerWidth / innerHeight <= 1;
+    const k = pointScale() * (small ? 0.6 : 1); logoPointMats.forEach((m) => { m.uniforms.uScale.value = k; });
   };
   const resize = () => {
     renderer.setSize(innerWidth, innerHeight, false);

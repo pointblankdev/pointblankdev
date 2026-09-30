@@ -15,7 +15,7 @@ const Layout = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(({ chi
       ref={localRef}
       className='absolute top-0 left-0 z-10 w-screen h-screen overflow-hidden dom bg-zinc-900 text-gray-50'>
       {children}
-      <div className='fixed bottom-0 flex justify-end w-full p-8 mx-auto text-5xl gap-5'>
+      <div className='fixed z-30 top-0 right-0 flex justify-end p-4 gap-3 text-2xl md:top-auto md:bottom-0 md:w-full md:p-8 md:gap-5 md:text-5xl'>
         <Link
           href={'https://join.slack.com/t/point-blank-dev/shared_invite/zt-1ucfhpulh-Oetg~GPOE5mc7JwsOrnGWg'}
           aria-label='Join us on Slack'
