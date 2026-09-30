@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import Link from 'next/link'
 
 const CONTACT = 'ross@pointblankdev.com'
 const UPDATED = 'September 30, 2026'
@@ -17,7 +16,9 @@ export default function Privacy() {
   return (
     <div className='h-full w-full overflow-y-auto bg-black'>
       <main className='max-w-2xl mx-auto px-6 py-16'>
-        <Link href='/' className='text-sm text-gray-400 hover:text-white'>← Point Blank Dev</Link>
+        {/* A full page load: the home scene script runs once per load */}
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+        <a href='/' className='text-sm text-gray-400 hover:text-white'>← Point Blank Dev</a>
         <h1 className='text-3xl md:text-4xl font-bold mt-6 mb-2'>Privacy Policy</h1>
         <p className='text-sm text-gray-400 mb-10'>Last updated {UPDATED}</p>
 
