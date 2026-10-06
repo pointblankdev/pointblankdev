@@ -6,6 +6,7 @@ import Services from '@/components/dom/Services'
 import Work from '@/components/dom/Work'
 import Contact from '@/components/dom/Contact'
 import About from '@/components/dom/About'
+import Process from '@/components/dom/Process'
 
 /*
  * Home (redesign, direction A "Machined"): a quiet black page, one gunmetal sculpture of the logo,
@@ -45,6 +46,7 @@ export default function Page() {
         <nav className='links' aria-label='Sections'>
           <a href='#services'>Services</a>
           <a href='#work'>Work</a>
+          <a href='#process'>Process</a>
           <a href='#about'>About</a>
           <a href='#contact'>Contact</a>
           <a className='btn btn-sm' href={BOOK}>
@@ -102,6 +104,8 @@ export default function Page() {
         <Services />
 
         <Work />
+
+        <Process />
 
         <About />
 
