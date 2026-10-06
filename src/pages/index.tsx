@@ -4,6 +4,7 @@ import { Geist, Geist_Mono, Newsreader } from 'next/font/google'
 import ClientLogos from '@/components/dom/ClientLogos'
 import Services from '@/components/dom/Services'
 import Work from '@/components/dom/Work'
+import Contact from '@/components/dom/Contact'
 
 /*
  * Home (redesign, direction A "Machined"): a quiet black page, one gunmetal sculpture of the logo,
@@ -40,9 +41,14 @@ export default function Page() {
         <Link href='/' className='mark'>
           POINT BLANK <span>DEV</span>
         </Link>
-        <a className='btn btn-sm' href={BOOK}>
-          Book a call
-        </a>
+        <nav className='links' aria-label='Sections'>
+          <a href='#services'>Services</a>
+          <a href='#work'>Work</a>
+          <a href='#contact'>Contact</a>
+          <a className='btn btn-sm' href={BOOK}>
+            Book a call
+          </a>
+        </nav>
       </header>
 
       <main>
@@ -94,6 +100,8 @@ export default function Page() {
         <Services />
 
         <Work />
+
+        <Contact email={EMAIL} book={BOOK} />
       </main>
 
       <footer className='foot'>
@@ -118,6 +126,14 @@ export default function Page() {
         html,
         body {
           background: var(--bg);
+        }
+        html {
+          scroll-behavior: smooth;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          html {
+            scroll-behavior: auto;
+          }
         }
       `}</style>
       <style jsx>{`
@@ -156,6 +172,25 @@ export default function Page() {
         }
         .nav :global(.mark span) {
           color: var(--dim);
+        }
+        .links {
+          display: flex;
+          align-items: center;
+          gap: 28px;
+        }
+        .links a:not(.btn) {
+          font-size: 14px;
+          color: var(--dim);
+          text-decoration: none;
+          transition: color 0.2s ease;
+        }
+        .links a:not(.btn):hover {
+          color: var(--fg);
+        }
+        @media (max-width: 640px) {
+          .links a:not(.btn) {
+            display: none;
+          }
         }
 
         .btn {
