@@ -2,7 +2,8 @@ import Head from 'next/head'
 
 const titleDefault = 'Point Blank Dev'
 const url = 'https://pointblankdev.com/'
-const description = `We don't just build software, we bring your digital vision to life. What we create for you is a reflection of who we are as engineers, designers, and developers.`
+const description =
+  'Senior engineering on call: AI features, full-stack products, online stores and security reviews for startups. An independent studio since 2020.'
 const author = 'Ross Ragsdale'
 
 export default function Header({ title = titleDefault }) {
@@ -26,7 +27,10 @@ export default function Header({ title = titleDefault }) {
       <meta property='og:title' content={title} />
       <meta property='og:type' content='website' />
       <meta property='og:url' content={url} />
-      <meta property='og:image' content={`${url}icons/share.png`} />
+      <meta property='og:image' content={`${url}og.png`} />
+      <meta property='og:image:width' content='1200' />
+      <meta property='og:image:height' content='630' />
+      <meta property='og:image:alt' content='Point Blank Dev: Senior engineering, on call.' />
       <meta property='og:site_name' content={titleDefault} />
       <meta property='og:description' content={description} />
 
@@ -42,12 +46,12 @@ export default function Header({ title = titleDefault }) {
       <meta name='theme-color' content='#070708' />
       <link rel='shortcut icon' href='/icons/favicon.ico' />
 
-      {/* Twitter Summary card */}
-      <meta name='twitter:card' content='summary' />
+      {/* Twitter / X large image card */}
+      <meta name='twitter:card' content='summary_large_image' />
       <meta name='twitter:site' content='@lordrozar' />
       <meta name='twitter:title' content={title} />
       <meta name='twitter:description' content={description} />
-      <meta name='twitter:image' content={`${url}icons/share.png`} />
+      <meta name='twitter:image' content={`${url}og.png`} />
     </Head>
   )
 }
