@@ -2,6 +2,7 @@ import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { Geist, Geist_Mono, Newsreader } from 'next/font/google'
 import ClientLogos from '@/components/dom/ClientLogos'
+import Services from '@/components/dom/Services'
 
 /*
  * Home (redesign, direction A "Machined"): a quiet black page, one gunmetal sculpture of the logo,
@@ -53,8 +54,8 @@ export default function Page() {
               <em>on call.</em>
             </h1>
             <p className='lede'>
-              We help teams ship AI features, full-stack products, online stores and security fixes. Decades of
-              experience in enterprise tech and fast-moving startups.
+              We help teams ship AI features, full-stack products, online stores and security fixes. Deep experience in
+              enterprise tech and fast-moving startups.
             </p>
             <div className='actions'>
               <a className='btn' href={BOOK}>
@@ -88,6 +89,8 @@ export default function Page() {
           </p>
           <ClientLogos />
         </section>
+
+        <Services />
       </main>
 
       <footer className='foot'>
