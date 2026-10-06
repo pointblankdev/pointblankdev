@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import Image, { type StaticImageData } from 'next/image'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import loop from '@/assets/work/loop.jpg'
-import swap from '@/assets/work/swap.jpg'
+import charisma from '@/assets/work/charisma.jpg'
 import zesty from '@/assets/work/zesty.jpg'
 import blazeWallet from '@/assets/work/blaze-wallet.jpg'
 
@@ -23,11 +23,11 @@ const PROJECTS: Project[] = [
     tags: ['Next.js', 'Supabase', 'Stripe'],
   },
   {
-    name: 'Charisma Swap',
-    url: 'https://swap.charisma.rocks/swap',
-    image: swap,
-    blurb: 'An open exchange for Stacks with multi-hop routing, limit orders and DCA.',
-    tags: ['DeFi', 'Routing', 'Real-time'],
+    name: 'Charisma',
+    url: 'https://charisma.rocks',
+    image: charisma,
+    blurb: 'An open-source DeFi suite on Stacks: swap at the best price, earn from liquidity, launch a token.',
+    tags: ['DeFi', 'Open source', 'Real-time'],
   },
   {
     name: 'Blaze Wallet',
