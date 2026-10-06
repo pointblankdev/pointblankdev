@@ -1,12 +1,16 @@
 {
-  "name": "R3F Next Starter",
-  "short_name": "R3F Next Starter",
+  "name": "Point Blank Dev",
+  "short_name": "Point Blank",
   "icons": [
     {
       "src": "/icons/favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon",
-      "purpose": "any maskable"
+      "sizes": "48x48 32x32 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
     },
     {
       "src": "/icons/android-icon-192x192.png",
@@ -24,6 +28,6 @@
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#070708",
+  "background_color": "#070708"
 }
