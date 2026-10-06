@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Geist, Geist_Mono, Newsreader } from 'next/font/google'
 import ClientLogos from '@/components/dom/ClientLogos'
 import Services from '@/components/dom/Services'
+import Work from '@/components/dom/Work'
 
 /*
  * Home (redesign, direction A "Machined"): a quiet black page, one gunmetal sculpture of the logo,
@@ -91,6 +92,8 @@ export default function Page() {
         </section>
 
         <Services />
+
+        <Work />
       </main>
 
       <footer className='foot'>
