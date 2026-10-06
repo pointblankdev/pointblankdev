@@ -1,7 +1,7 @@
 import Head from 'next/head'
 
 const titleDefault = 'Point Blank Dev'
-const url = 'https://pointblankdev.com/'
+const url = 'https://www.pointblankdev.com/'
 const description =
   'Senior engineering on call: AI features, full-stack products, online stores and security reviews for startups. An independent studio since 2020.'
 const author = 'Ross Ragsdale'
