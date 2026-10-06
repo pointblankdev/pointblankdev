@@ -53,8 +53,8 @@ export default function Page() {
               <em>on call.</em>
             </h1>
             <p className='lede'>
-              I help teams ship AI features, full-stack products, online stores and security fixes. Ten-plus years in
-              enterprise tech and fast-moving startups.
+              We help teams ship AI features, full-stack products, online stores and security fixes. Decades of
+              experience in enterprise tech and fast-moving startups.
             </p>
             <div className='actions'>
               <a className='btn' href={BOOK}>
