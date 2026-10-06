@@ -5,6 +5,7 @@ import ClientLogos from '@/components/dom/ClientLogos'
 import Services from '@/components/dom/Services'
 import Work from '@/components/dom/Work'
 import Contact from '@/components/dom/Contact'
+import About from '@/components/dom/About'
 
 /*
  * Home (redesign, direction A "Machined"): a quiet black page, one gunmetal sculpture of the logo,
@@ -44,6 +45,7 @@ export default function Page() {
         <nav className='links' aria-label='Sections'>
           <a href='#services'>Services</a>
           <a href='#work'>Work</a>
+          <a href='#about'>About</a>
           <a href='#contact'>Contact</a>
           <a className='btn btn-sm' href={BOOK}>
             Book a call
@@ -100,6 +102,8 @@ export default function Page() {
         <Services />
 
         <Work />
+
+        <About />
 
         <Contact email={EMAIL} book={BOOK} />
       </main>

@@ -277,10 +277,13 @@ export default function Work() {
           aspect-ratio: 1600 / 937; /* every card the same shape */
           object-fit: cover;
           object-position: top;
-          transition: transform 0.6s ease;
+          filter: grayscale(1) contrast(1.05) brightness(0.92); /* keeps the page's palette; colour returns on hover */
+          transition: transform 0.6s ease, filter 0.6s ease;
         }
-        .card:hover .shot :global(img) {
+        .card:hover .shot :global(img),
+        .card:focus-visible .shot :global(img) {
           transform: scale(1.02);
+          filter: none;
         }
         .meta {
           display: grid;
