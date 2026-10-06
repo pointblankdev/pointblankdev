@@ -393,13 +393,14 @@ function Coin({ font, reduced, onReady }: { font: string; reduced: boolean; onRe
     // at rest it faces front and sways gently, floating
     const sway = reduced ? 0 : Math.sin((t * TAU) / 9) * 0.32 + Math.sin((t * TAU) / 5.3) * 0.06
     const bob = reduced ? 0 : Math.sin((t * TAU) / 4) * 0.06
-    coin.position.set(0, bob + (1 - smooth(0, 1.6, age)) * 0.25, 0)
+    // no rising entrance: at its highest float and lean the coin's top must stay inside the canvas
+    coin.position.set(0, bob, 0)
     coin.rotation.set(
       0.12 + Math.sin((t * TAU) / 8) * 0.05 + lean.current.x,
       REST_TURN + sway + sp.angle + lean.current.y,
       Math.sin((t * TAU) / 6) * 0.03,
     )
-    coin.scale.setScalar(0.9 + 0.1 * smooth(0, 1.2, age))
+    coin.scale.setScalar(0.85 + 0.15 * smooth(0, 1.4, age))
     // the glint: a light sweeps across the face every seven seconds, and on every click
     if (t - glintAt.current > 7) glintAt.current = t
     const g = reduced ? 1 : (t - glintAt.current) / 1.2
@@ -518,7 +519,7 @@ export default function HeroCoin({ className }: { className?: string }) {
         <Canvas
           frameloop={visible ? 'always' : 'never'}
           dpr={[1, 2]}
-          camera={{ position: [0, 0, 4.4], fov: 30 }}
+          camera={{ position: [0, 0, 4.7], fov: 30 }} // far enough that float + lean never clip the rim
           gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
           onCreated={({ gl }) => {
             gl.toneMapping = THREE.ACESFilmicToneMapping

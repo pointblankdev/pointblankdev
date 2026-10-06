@@ -1,11 +1,14 @@
 import type { ReactNode } from 'react'
-import Image from 'next/image'
+import Image, { type StaticImageData } from 'next/image'
 import { User } from 'lucide-react'
 import ross from '@/assets/about/ross.jpg'
 
 /*
- * The team: the founder (a real photo), the bench of senior contractors, and Claude, the AI teammate,
- * drawn here as an original warm sparkle rather than Anthropic's own mark. Then a few numbers from the work.
+ * The team: the founder (a real photo), a panel of expert peers brought in by project, and Claude, the AI
+ * teammate, drawn as an original warm sparkle rather than Anthropic's own mark. Then Ross at a glance.
+ *
+ * To add an expert: drop their headshot in src/assets/about/, import it, and add them to EXPERTS.
+ * Once EXPERTS has anyone in it, their cards replace the panel placeholder.
  */
 
 const FACTS: [string, string][] = [
@@ -51,16 +54,16 @@ const ClaudeArt = () => (
   </svg>
 )
 
-// The bench: three senior engineers, faces withheld
-const BenchArt = () => (
-  <div className='bench-art' aria-hidden='true'>
+// The expert panel, until real headshots arrive
+const PanelArt = () => (
+  <div className='panel-art' aria-hidden='true'>
     {[0, 1, 2].map((i) => (
       <span key={i}>
         <User size={44} strokeWidth={1.2} />
       </span>
     ))}
     <style jsx>{`
-      .bench-art {
+      .panel-art {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -90,6 +93,26 @@ const BenchArt = () => (
 
 type Member = { name: string; role: string; bio: string; pic: ReactNode }
 
+// Senior peers, each an expert in their field (photo: a square headshot)
+type Expert = { name: string; field: string; bio: string; photo: StaticImageData }
+const EXPERTS: Expert[] = []
+
+const PANEL: Member[] = EXPERTS.length
+  ? EXPERTS.map((e) => ({
+      name: e.name,
+      role: e.field,
+      bio: e.bio,
+      pic: <Image src={e.photo} alt={`${e.name}, headshot`} placeholder='blur' unoptimized />,
+    }))
+  : [
+      {
+        name: 'The expert panel',
+        role: 'Senior specialists, by project',
+        bio: 'Peers Ross has worked alongside, each an expert in their field, brought in when a project calls for that depth.',
+        pic: <PanelArt />,
+      },
+    ]
+
 const TEAM: Member[] = [
   {
     name: 'Ross Ragsdale',
@@ -97,12 +120,7 @@ const TEAM: Member[] = [
     bio: 'Has run Point Blank Dev since 2020, stepping in as fractional CTO and founding engineer for startups that need to move fast without breaking things. He has done every job on the team, so nothing falls through the cracks. Pictured with Pogi, head of QA.',
     pic: <Image src={ross} alt='Ross Ragsdale holding Pogi, his corgi, at sunset' placeholder='blur' unoptimized />,
   },
-  {
-    name: 'The bench',
-    role: 'Senior engineers, on call',
-    bio: 'Engineers Ross has led for years, brought in when a project needs more hands. Same standards, no hand-offs.',
-    pic: <BenchArt />,
-  },
+  ...PANEL,
   {
     name: 'Claude',
     role: 'AI engineer · by Anthropic',
@@ -117,11 +135,11 @@ export default function About() {
       <header className='head'>
         <p className='eyebrow'>The team</p>
         <h2 id='about-title'>
-          Small team. <em>Senior by default.</em>
+          Small team. <em>Experts only.</em>
         </h2>
         <p className='lede'>
-          A founder who still writes the code, senior engineers he has worked with for years, and one very fast AI
-          teammate. You always talk to the people building your product.
+          Ross leads every engagement and writes code himself. When a project calls for deep specialist knowledge, he
+          brings in senior peers who are experts in their fields. Plus one very fast AI teammate.
         </p>
       </header>
 
@@ -138,14 +156,17 @@ export default function About() {
         ))}
       </ul>
 
-      <dl className='facts'>
-        {FACTS.map(([n, label]) => (
-          <div key={label}>
-            <dt>{n}</dt>
-            <dd>{label}</dd>
-          </div>
-        ))}
-      </dl>
+      <div className='glance'>
+        <p className='eyebrow'>Ross, at a glance</p>
+        <dl className='facts'>
+          {FACTS.map(([n, label]) => (
+            <div key={label}>
+              <dt>{n}</dt>
+              <dd>{label}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
 
       <style jsx>{`
         .about {
@@ -239,13 +260,17 @@ export default function About() {
           color: var(--dim);
         }
 
+        .glance {
+          display: grid;
+          gap: 24px;
+          padding-top: 28px;
+          border-top: 1px solid var(--line);
+        }
         .facts {
           display: grid;
           grid-template-columns: repeat(4, minmax(0, 1fr));
           gap: 24px 32px;
           margin: 0;
-          padding-top: 28px;
-          border-top: 1px solid var(--line);
         }
         .facts dt {
           margin-bottom: 6px;
