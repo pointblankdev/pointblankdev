@@ -32,7 +32,7 @@ export default function Contact({ email, book }: { email: string; book: string }
           <h2 id='contact-title'>
             Got something <em>worth building?</em>
           </h2>
-          <p className='lede'>Retainers from $3K a month. Senior engineering on call, without a full-time hire.</p>
+          <p className='lede'>Retainers from $5K a month. Senior engineering on call, without a full-time hire.</p>
           <div className='actions'>
             <a className='btn' href={book}>
               Book a call

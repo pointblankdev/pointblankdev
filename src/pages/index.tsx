@@ -86,7 +86,7 @@ export default function Page() {
                 <dd>in fintech, AI and cloud infrastructure</dd>
               </div>
               <div>
-                <dt>$3K/mo</dt>
+                <dt>$5K/mo</dt>
                 <dd>where retainers start</dd>
               </div>
             </dl>
