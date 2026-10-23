@@ -181,9 +181,11 @@ const usePointer = () => {
   return p
 }
 
-// at rest the coin shows its back face, turned slightly; the other forms show their front, turned the same way
-const REST_TURN = Math.PI - 0.2
-const FRONT_TURN = -0.2
+// how each one floats: the coin rests on its back face, turned slightly, and sways wide; the other forms are
+// taller (and curved), so they face front and only drift a little, never seeming to turn away
+type Motion = { rest: number; sway: number; lean: number }
+const COIN_MOTION: Motion = { rest: Math.PI - 0.2, sway: 1, lean: 1 }
+const FORM_MOTION: Motion = { rest: -0.05, sway: 0.25, lean: 0.5 }
 
 export type EmblemShape = 'coin' | 'kite' | 'buckler' | 'padlock'
 const FORMS = { kite: kiteShield, buckler: bucklerShield, padlock }
@@ -191,18 +193,18 @@ const FORMS = { kite: kiteShield, buckler: bucklerShield, padlock }
 type StageProps = { reduced: boolean; onReady: () => void }
 
 function Coin({ font, ...stage }: StageProps & { font: string }) {
-  return <Emblem object={useCoin(font)} rest={REST_TURN} {...stage} />
+  return <Emblem object={useCoin(font)} motion={COIN_MOTION} {...stage} />
 }
 
 function Form({ shape, ...stage }: StageProps & { shape: Exclude<EmblemShape, 'coin'> }) {
   const svg = useLoader(SVGLoader, '/pbd-mark.svg')
   const [object] = useState(() => FORMS[shape](svg))
-  return <Emblem object={object} rest={FRONT_TURN} {...stage} />
+  return <Emblem object={object} motion={FORM_MOTION} {...stage} />
 }
 
 // the emblem afloat: swaying, leaning toward the cursor, catching a glint; a click flips it (or, if the emblem
 // has its own press, such as the padlock's shackle, does that instead)
-function Emblem({ object: coin, rest, reduced, onReady }: StageProps & { object: THREE.Object3D; rest: number }) {
+function Emblem({ object: coin, motion, reduced, onReady }: StageProps & { object: THREE.Object3D; motion: Motion }) {
   const pointer = usePointer()
   const lean = useRef({ x: 0, y: 0 })
   const born = useRef<number | null>(null)
@@ -229,19 +231,19 @@ function Emblem({ object: coin, rest, reduced, onReady }: StageProps & { object:
     // lean toward the cursor, eased
     const k = 1 - Math.exp(-delta * 3)
     lean.current.x += (pointer.current.y * 0.25 - lean.current.x) * k
-    lean.current.y += (pointer.current.x * 0.45 - lean.current.y) * k
+    lean.current.y += (pointer.current.x * 0.45 * motion.lean - lean.current.y) * k
     // spin toward the target: fast when far, slowing as it lands
     const sp = spin.current
     sp.angle += (sp.target - sp.angle) * (1 - Math.exp(-delta * 2.4))
     if (Math.abs(sp.target - sp.angle) < 1e-4) sp.angle = sp.target
     // at rest it faces front and sways gently, floating
-    const sway = reduced ? 0 : Math.sin((t * TAU) / 9) * 0.32 + Math.sin((t * TAU) / 5.3) * 0.06
+    const sway = reduced ? 0 : (Math.sin((t * TAU) / 9) * 0.32 + Math.sin((t * TAU) / 5.3) * 0.06) * motion.sway
     const bob = reduced ? 0 : Math.sin((t * TAU) / 4) * 0.06
     // no rising entrance: at its highest float and lean the coin's top must stay inside the canvas
     coin.position.set(0, bob, 0)
     coin.rotation.set(
       0.12 + Math.sin((t * TAU) / 8) * 0.05 + lean.current.x,
-      rest + sway + sp.angle + lean.current.y,
+      motion.rest + sway + sp.angle + lean.current.y,
       Math.sin((t * TAU) / 6) * 0.03,
     )
     coin.scale.setScalar(0.85 + 0.15 * smooth(0, 1.4, age))
