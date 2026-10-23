@@ -4,7 +4,7 @@ import CountUp from '@/components/dom/CountUp'
 /*
  * Why now: the curve, then the shift in four numbers, each from recent reporting and linked to its source.
  * The chart is plain HTML columns, so it stays crisp at any width; a hidden table carries the same numbers.
- * Everything here is the threat, so it's in the page's red, the counterpart to the green of the fix.
+ * The chart stacks every month's flaws by severity in a warm ramp, worst on top, so each spike ends in dark red.
  * The first time each comes into view, the chart draws itself and the figures count up.
  */
 
@@ -40,29 +40,73 @@ const STATS: Stat[] = [
   },
 ]
 
-// High- and critical-severity CVEs published per month from January 2024 (Epoch AI's CVE data, updated
-// Oct 23, 2026). The last month is partial, October through the 22nd; PACE scales it to all 31 days.
-const SERIOUS = [
-  1207, 1220, 1411, 1534, 2292, 1222, 1401, 1301, 1163, 1635, 1755, 1425, 1804, 1471, 1808, 1770, 1465, 1359, 1667,
-  1499, 1570, 1718, 1245, 2228, 2035, 1905, 2926, 2561, 3247, 4126, 5421, 7048, 7748, 6443,
+// Software flaws (CVEs) published per month from January 2024, by severity: critical, high, medium, low, and not
+// yet rated (Epoch AI's CVE data, updated Oct 23, 2026). The last month is partial, October through the 22nd;
+// PACE scales its total to all 31 days.
+const MONTHLY = [
+  [292, 915, 1227, 142, 6],
+  [333, 887, 1266, 126, 167],
+  [291, 1120, 1620, 136, 121],
+  [282, 1252, 1683, 178, 199],
+  [401, 1891, 1942, 200, 557],
+  [297, 925, 1608, 94, 151],
+  [272, 1129, 1335, 92, 276],
+  [307, 994, 1333, 59, 202],
+  [276, 887, 1111, 71, 167],
+  [360, 1275, 1552, 101, 260],
+  [352, 1403, 2016, 161, 26],
+  [296, 1129, 1793, 91, 83],
+  [377, 1427, 2268, 109, 68],
+  [264, 1207, 1754, 136, 310],
+  [397, 1411, 1974, 149, 62],
+  [318, 1452, 2016, 149, 93],
+  [348, 1117, 2031, 135, 346],
+  [282, 1077, 1904, 126, 283],
+  [363, 1304, 1715, 105, 238],
+  [365, 1134, 1785, 117, 97],
+  [294, 1276, 2330, 149, 263],
+  [304, 1414, 1963, 145, 409],
+  [254, 991, 1579, 126, 60],
+  [418, 1810, 2325, 153, 726],
+  [420, 1615, 1927, 146, 167],
+  [415, 1490, 2077, 256, 179],
+  [620, 2306, 2603, 255, 139],
+  [557, 2004, 2635, 243, 211],
+  [673, 2574, 2606, 290, 681],
+  [929, 3197, 3109, 307, 273],
+  [1313, 4108, 3558, 385, 392],
+  [1813, 5235, 4110, 406, 691],
+  [1557, 6191, 5253, 563, 1366],
+  [1194, 5249, 5244, 479, 840],
 ]
-const PACE = Math.round((SERIOUS[SERIOUS.length - 1] * 31) / 22)
-const AVG_2025 = 1633
-const TOP = 10000
-const TICKS = [0, 2500, 5000, 7500, 10000]
+// an ordered warm ramp, darkest red for the worst (checked for step-to-step separation, colour blindness included,
+// and contrast on the dark card); no green here, since green on this page means safe
+const SEVERITY = [
+  { label: 'Critical', color: '#b72533' },
+  { label: 'High', color: '#f85743' },
+  { label: 'Medium', color: '#ffa228' },
+  { label: 'Low', color: '#feea74' },
+  { label: 'Not yet rated', color: '#64635d' },
+]
+const sum = (r: number[]) => r.reduce((a, b) => a + b, 0)
+const PACE = Math.round((sum(MONTHLY[MONTHLY.length - 1]) * 31) / 22)
+const AVG_2025 = Math.round(sum(MONTHLY.slice(12, 24).map(sum)) / 12)
+const TOP = 20000
+const TICKS = [0, 5000, 10000, 15000, 20000]
 const MONTH = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
-const MONTHS = SERIOUS.map((n, i) => ({
-  n,
+const MONTHS = MONTHLY.map((parts, i) => ({
+  parts,
+  n: sum(parts),
   month: MONTH[i % 12],
   year: 2024 + Math.floor(i / 12),
-  partial: i === SERIOUS.length - 1,
+  partial: i === MONTHLY.length - 1,
 }))
 
 // the average line spans only 2025's twelve columns
 const AVG_SPAN = {
-  left: `${(12 / SERIOUS.length) * 100}%`,
-  right: `${((SERIOUS.length - 24) / SERIOUS.length) * 100}%`,
+  left: `${(12 / MONTHLY.length) * 100}%`,
+  right: `${((MONTHLY.length - 24) / MONTHLY.length) * 100}%`,
 }
 
 const fmt = (n: number) => n.toLocaleString('en-US')
@@ -87,10 +131,16 @@ export default function WhyNow() {
 
       <figure className='chart' ref={chart}>
         <figcaption className='cap'>
-          <span className='title'>Serious software flaws published each month</span>
-          <span className='sub'>
-            High and critical severity, January 2024 to October 2026. October’s outline is its full-month pace.
-          </span>
+          <span className='title'>Software flaws published each month, by severity</span>
+          <span className='sub'>January 2024 to October 2026. October’s outline is its full-month pace.</span>
+          <ul className='legend'>
+            {SEVERITY.map((v) => (
+              <li key={v.label}>
+                <i style={{ background: v.color }} />
+                {v.label}
+              </li>
+            ))}
+          </ul>
         </figcaption>
 
         <div className='plot' aria-hidden='true'>
@@ -110,11 +160,15 @@ export default function WhyNow() {
                     <b className='peak'>{about(PACE)} on pace</b>
                   </span>
                 )}
-                <span className='bar' style={{ height: pct(m.n) }} />
+                <span className='bar' style={{ height: pct(m.n) }}>
+                  {m.parts.map((v, k) => (
+                    <i key={k} style={{ flexGrow: v, background: SEVERITY[k].color }} />
+                  ))}
+                </span>
                 {m.month === 'Jan' && <span className='yr'>{m.year}</span>}
                 <span className='tip'>
-                  {m.month} {m.year} · {fmt(m.n)}
-                  {m.partial && ` so far, ${about(PACE)} on pace`}
+                  {m.month} {m.year} · {fmt(m.n)} flaws{m.partial && ` so far (${about(PACE)} on pace)`} ·{' '}
+                  {fmt(m.parts[0])} critical
                 </span>
               </li>
             ))}
@@ -123,13 +177,16 @@ export default function WhyNow() {
 
         <div className='sr'>
           <table>
-            <caption>
-              Serious software flaws (high and critical) published each month, January 2024 to October 2026
-            </caption>
+            <caption>Software flaws published each month by severity, January 2024 to October 2026</caption>
             <thead>
               <tr>
                 <th scope='col'>Month</th>
-                <th scope='col'>Serious flaws</th>
+                {SEVERITY.map((v) => (
+                  <th scope='col' key={v.label}>
+                    {v.label}
+                  </th>
+                ))}
+                <th scope='col'>Total</th>
               </tr>
             </thead>
             <tbody>
@@ -138,6 +195,9 @@ export default function WhyNow() {
                   <th scope='row'>
                     {m.month} {m.year}
                   </th>
+                  {m.parts.map((v, k) => (
+                    <td key={k}>{fmt(v)}</td>
+                  ))}
                   <td>
                     {fmt(m.n)}
                     {m.partial && ` (through the 22nd; on pace for ${about(PACE)})`}
@@ -231,6 +291,25 @@ export default function WhyNow() {
           font-size: 14px;
           color: var(--faint);
         }
+        .legend {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px 18px;
+          margin: 6px 0 0;
+          padding: 0;
+          list-style: none;
+          font-size: 13px;
+          color: var(--dim);
+        }
+        .legend li {
+          display: flex;
+          align-items: center;
+          gap: 7px;
+        }
+        .legend i {
+          width: 10px;
+          height: 10px;
+        }
         .plot {
           position: relative;
           height: clamp(220px, 28vw, 340px);
@@ -282,14 +361,19 @@ export default function WhyNow() {
           justify-content: center;
           min-width: 0;
         }
+        /* square, seamless columns: one solid spike a month, heating from unrated at the base to critical at the tip */
         .bar {
           position: relative;
+          display: flex;
+          flex-direction: column;
           width: 100%;
           max-width: 24px;
-          border-radius: 4px 4px 0 0;
-          background: var(--red);
-          opacity: 0.85;
+          opacity: 0.9;
           transition: opacity 0.2s ease;
+        }
+        .bar i {
+          flex-basis: 0;
+          min-height: 0;
         }
         .bars li:hover .bar {
           opacity: 1;
@@ -303,10 +387,9 @@ export default function WhyNow() {
           width: 100%;
           max-width: 24px;
           margin: 0 auto;
-          border: 1px solid rgba(229, 72, 77, 0.6);
+          border: 1px solid rgba(236, 236, 232, 0.5);
           border-bottom: 0;
-          border-radius: 4px 4px 0 0;
-          background: rgba(229, 72, 77, 0.1);
+          background: rgba(236, 236, 232, 0.05);
         }
         .peak {
           position: absolute;
@@ -418,7 +501,6 @@ export default function WhyNow() {
           font-size: clamp(48px, 4.6vw, 64px);
           line-height: 1;
           letter-spacing: -0.02em;
-          color: var(--red);
         }
         dd {
           display: grid;
