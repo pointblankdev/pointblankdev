@@ -8,6 +8,8 @@ import WhyNow from '@/components/dom/WhyNow'
 import Contact from '@/components/dom/Contact'
 import About from '@/components/dom/About'
 import Process from '@/components/dom/Process'
+import RiskCheck from '@/components/dom/RiskCheck'
+import CalendlyWidget, { BOOK, openCalendly } from '@/components/dom/Calendly'
 
 /*
  * Home (redesign, direction A "Machined"): a quiet black page, one gunmetal sculpture of the logo,
@@ -22,8 +24,6 @@ const mono = Geist_Mono({ subsets: ['latin'], variable: '--font-mono' })
 const HeroCoin = dynamic(() => import('@/components/canvas/HeroCoin'), { ssr: false })
 
 const EMAIL = 'ross@pointblankdev.com'
-// TODO: swap for a scheduling link (Cal.com / Calendly) once there is one
-const BOOK = `mailto:${EMAIL}?subject=${encodeURIComponent('Intro call')}`
 
 const Arrow = () => (
   <svg width='14' height='14' viewBox='0 0 14 14' fill='none' aria-hidden='true'>
@@ -51,7 +51,7 @@ export default function Page() {
           <a href='#process'>Process</a>
           <a href='#about'>About</a>
           <a href='#contact'>Contact</a>
-          <a className='btn btn-sm' href={BOOK}>
+          <a className='btn btn-sm' href={BOOK} target='_blank' rel='noopener noreferrer' onClick={openCalendly}>
             Book a call
           </a>
         </nav>
@@ -74,7 +74,7 @@ export default function Page() {
               everything you’ve built can be gone in an instant. I find the open doors and lock them, before they do.
             </p>
             <div className='actions'>
-              <a className='btn' href={BOOK}>
+              <a className='btn' href={BOOK} target='_blank' rel='noopener noreferrer' onClick={openCalendly}>
                 Book a call <Arrow />
               </a>
               <span className='or'>
@@ -110,6 +110,8 @@ export default function Page() {
 
         <Services />
 
+        <RiskCheck />
+
         <Work />
 
         <Process />
@@ -118,6 +120,8 @@ export default function Page() {
 
         <Contact email={EMAIL} book={BOOK} />
       </main>
+
+      <CalendlyWidget />
 
       <footer className='foot'>
         <span>© {new Date().getFullYear()} Point Blank Dev, LLC</span>

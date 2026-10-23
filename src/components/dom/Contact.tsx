@@ -1,4 +1,5 @@
 import { useState, type MouseEvent } from 'react'
+import { openCalendly } from '@/components/dom/Calendly'
 
 /*
  * The closing ask: one panel lit by a slow green light field, one button, and the email to copy.
@@ -36,7 +37,7 @@ export default function Contact({ email, book }: { email: string; book: string }
             Retainers from $5K a month. A senior security engineer on your side, without a full-time hire.
           </p>
           <div className='actions'>
-            <a className='btn' href={book}>
+            <a className='btn' href={book} target='_blank' rel='noopener noreferrer' onClick={openCalendly}>
               Book a call
             </a>
             <div className='mail'>
