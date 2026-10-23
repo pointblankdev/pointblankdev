@@ -1,7 +1,11 @@
+import useReveal from '@/hooks/useReveal'
+import CountUp from '@/components/dom/CountUp'
+
 /*
  * Why now: the curve, then the shift in four numbers, each from recent reporting and linked to its source.
  * The chart is plain HTML columns, so it stays crisp at any width; a hidden table carries the same numbers.
  * Everything here is the threat, so it's in the page's red, the counterpart to the green of the fix.
+ * The first time each comes into view, the chart draws itself and the figures count up.
  */
 
 type Stat = { n: string; text: string; source: string; href: string }
@@ -67,6 +71,7 @@ const tick = (n: number) => (n >= 1000 ? `${n / 1000}K` : String(n))
 const pct = (n: number) => `${(n / TOP) * 100}%`
 
 export default function WhyNow() {
+  const chart = useReveal<HTMLElement>()
   return (
     <section className='why' id='why-now' aria-labelledby='why-title'>
       <header className='head'>
@@ -80,7 +85,7 @@ export default function WhyNow() {
         </p>
       </header>
 
-      <figure className='chart'>
+      <figure className='chart' ref={chart}>
         <figcaption className='cap'>
           <span className='title'>Serious software flaws published each month</span>
           <span className='sub'>
@@ -98,8 +103,8 @@ export default function WhyNow() {
             <span>2025 average: {fmt(AVG_2025)}</span>
           </div>
           <ol className='bars'>
-            {MONTHS.map((m) => (
-              <li key={`${m.year}-${m.month}`}>
+            {MONTHS.map((m, i) => (
+              <li key={`${m.year}-${m.month}`} style={{ ['--i' as string]: i }}>
                 {m.partial && (
                   <span className='pace' style={{ height: pct(PACE) }}>
                     <b className='peak'>{about(PACE)} on pace</b>
@@ -149,9 +154,11 @@ export default function WhyNow() {
       </figure>
 
       <dl className='stats'>
-        {STATS.map((s) => (
+        {STATS.map((s, i) => (
           <div key={s.n}>
-            <dt>{s.n}</dt>
+            <dt>
+              <CountUp value={s.n} delay={i * 150} />
+            </dt>
             <dd>
               <p>{s.text}</p>
               <a href={s.href} target='_blank' rel='noopener noreferrer'>
@@ -291,10 +298,11 @@ export default function WhyNow() {
         .pace {
           position: absolute;
           bottom: 0;
-          left: 50%;
-          transform: translateX(-50%);
+          left: 0;
+          right: 0;
           width: 100%;
           max-width: 24px;
+          margin: 0 auto;
           border: 1px solid rgba(229, 72, 77, 0.6);
           border-bottom: 0;
           border-radius: 4px 4px 0 0;
@@ -307,6 +315,32 @@ export default function WhyNow() {
           font: 500 13px/1 var(--font-sans), sans-serif;
           color: var(--fg);
           white-space: nowrap;
+        }
+        /* drawn on first view: the columns rise left to right, then October's pace grows, then the labels */
+        .chart[data-reveal] .bar,
+        .chart[data-reveal] .pace {
+          transform: scaleY(0);
+          transform-origin: bottom;
+        }
+        .chart[data-reveal] .avg,
+        .chart[data-reveal] .peak {
+          opacity: 0;
+        }
+        .chart[data-reveal='shown'] .bar,
+        .chart[data-reveal='shown'] .pace {
+          transform: none;
+          transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) calc(var(--i) * 28ms), opacity 0.2s ease;
+        }
+        .chart[data-reveal='shown'] .pace {
+          transition-delay: 1.1s;
+        }
+        .chart[data-reveal='shown'] .avg,
+        .chart[data-reveal='shown'] .peak {
+          opacity: 1;
+          transition: opacity 0.6s ease 1.5s;
+        }
+        .chart[data-reveal='shown'] .peak {
+          transition-delay: 1.9s; /* once October's outline has finished growing */
         }
         .yr {
           position: absolute;

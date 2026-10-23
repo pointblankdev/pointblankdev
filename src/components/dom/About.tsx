@@ -1,8 +1,10 @@
 import Image from 'next/image'
 import ross from '@/assets/about/ross.jpg'
+import CountUp from '@/components/dom/CountUp'
 
 /*
- * About: one engineer. A real photo beside the story in a few short paragraphs, then Ross at a glance.
+ * About: one engineer. A real photo beside the story in a few short paragraphs, then Ross at a glance
+ * (its figures count up the first time they come into view).
  */
 
 const STORY = [
@@ -44,7 +46,9 @@ export default function About() {
         <dl className='facts'>
           {FACTS.map(([n, label]) => (
             <div key={label}>
-              <dt>{n}</dt>
+              <dt>
+                <CountUp value={n} />
+              </dt>
               <dd>{label}</dd>
             </div>
           ))}

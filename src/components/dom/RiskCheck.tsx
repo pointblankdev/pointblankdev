@@ -1,10 +1,12 @@
 import type { ReactNode } from 'react'
 import { ShieldAlert, ShieldQuestion, ShieldX } from 'lucide-react'
 import { BOOK, openCalendly } from '@/components/dom/Calendly'
+import useReveal from '@/hooks/useReveal'
 
 /*
  * Gut check: three buckets a business owner can place themselves in without knowing anything technical,
  * each with a three-step risk meter (level shown by label and icon too, never colour alone), then the ask.
+ * The meters light up, segment by segment, the first time the cards come into view.
  */
 
 type Bucket = {
@@ -44,6 +46,7 @@ const BUCKETS: Bucket[] = [
 ]
 
 export default function RiskCheck() {
+  const buckets = useReveal<HTMLUListElement>()
   return (
     <section className='risk' id='risk' aria-labelledby='risk-title'>
       <header className='head'>
@@ -57,7 +60,7 @@ export default function RiskCheck() {
         </p>
       </header>
 
-      <ul className='buckets'>
+      <ul className='buckets' ref={buckets}>
         {BUCKETS.map((b) => (
           <li key={b.label} className={`bucket l${b.level}`}>
             <div className='top'>
@@ -67,7 +70,7 @@ export default function RiskCheck() {
               </span>
               <span className='meter' aria-hidden='true'>
                 {[1, 2, 3].map((i) => (
-                  <i key={i} className={i <= b.level ? 'on' : undefined} />
+                  <i key={i} className={i <= b.level ? 'on' : undefined} style={{ ['--k' as string]: i }} />
                 ))}
               </span>
             </div>
@@ -195,6 +198,13 @@ export default function RiskCheck() {
         }
         .meter i.on {
           background: var(--tone);
+        }
+        .buckets[data-reveal] .meter i.on {
+          background: var(--line);
+        }
+        .buckets[data-reveal='shown'] .meter i.on {
+          background: var(--tone);
+          transition: background-color 0.3s ease calc(var(--k) * 200ms + 300ms);
         }
         h3 {
           margin: 0;
