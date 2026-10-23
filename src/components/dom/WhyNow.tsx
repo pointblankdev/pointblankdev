@@ -2,41 +2,46 @@ import useReveal from '@/hooks/useReveal'
 import CountUp from '@/components/dom/CountUp'
 
 /*
- * Why now: the curve, then the shift in four numbers, each from recent reporting and linked to its source.
- * The chart is plain HTML columns, so it stays crisp at any width; a hidden table carries the same numbers.
- * The chart stacks every month's flaws by severity in a warm ramp, worst on top, so each spike ends in dark red.
- * The first time each comes into view, the chart draws itself and the figures count up.
+ * Why now: the curve, then the gap. The chart stacks every month's flaws by severity in a warm ramp, worst on top,
+ * so each spike ends in dark red; it's plain HTML columns, crisp at any width, and a hidden table carries the same
+ * numbers. Under it, one line on why patching on schedule no longer cuts it, then four figures from the past few
+ * weeks, each dated, since the AI-driven shift is newer than any annual report. They count up on first view.
  */
 
-type Stat = { n: string; text: string; source: string; href: string }
+type Stat = { n: string; when: string; text: string; source: string; href: string }
 
-const AGENTS_1200 = 'https://thehackernews.com/2026/10/hackers-use-autonomous-ai-agents-to.html'
+const DBIR = 'https://www.verizon.com/business/resources/reports/dbir/'
+const GTIG = 'https://www.helpnetsecurity.com/2026/10/01/google-ai-discovered-vulnerabilities-remote-code-execution/'
 const EPOCH = 'https://epoch.ai/data/cve'
 
 const STATS: Stat[] = [
   {
     n: '~5%',
-    text: 'of every critical software flaw published since 2020 came out in three weeks of October 2026.',
+    when: 'Oct 2026',
+    text: 'of all critical software flaws published since 2020 came out in just three weeks.',
     source: 'Epoch AI',
     href: EPOCH,
   },
   {
-    n: '1,200+',
-    text: 'websites hit by one hacker’s AI agents in October 2026. They broke into more than 100 companies.',
-    source: 'The Hacker News',
-    href: AGENTS_1200,
+    n: '~70%',
+    when: 'Oct 21, 2026',
+    text: 'of websites run on PHP. AI just found two flaws in it that hand attackers the whole server.',
+    source: 'Axios',
+    href: 'https://www.yahoo.com/news/world/articles/black-october-why-bugs-discovered-180131955.html',
+  },
+  {
+    n: '26 sec',
+    when: 'Sept 2026',
+    text: 'for one attacker’s swarm of AI agents to break into 11 organizations at once.',
+    source: 'VentureBeat',
+    href: 'https://venturebeat.com/security/ai-agents-breached-395-organizations-using-credentials-your-iam-policy-still-treats-as-human',
   },
   {
     n: '~$50',
-    text: 'what each of those break-ins cost the hacker in AI fees.',
+    when: 'Oct 2026',
+    text: 'what each successful break-in cost one attacker in AI fees, across 1,200+ company websites.',
     source: 'The Hacker News',
-    href: AGENTS_1200,
-  },
-  {
-    n: '7 min',
-    text: 'for AI agents to go from a first foothold to full control of a U.S. high school’s network.',
-    source: 'VentureBeat',
-    href: 'https://venturebeat.com/security/ai-agents-breached-395-organizations-using-credentials-your-iam-policy-still-treats-as-human',
+    href: 'https://thehackernews.com/2026/10/hackers-use-autonomous-ai-agents-to.html',
   },
 ]
 
@@ -213,6 +218,17 @@ export default function WhyNow() {
         </a>
       </figure>
 
+      <p className='gap'>
+        Patching on schedule used to be enough. Now an <span className='nb'>AI-found</span> flaw can be under attack
+        within <b>4 days</b>, and the typical company takes <b>43</b> to fix one.{' '}
+        <a href={GTIG} target='_blank' rel='noopener noreferrer'>
+          Google ↗
+        </a>{' '}
+        <a href={DBIR} target='_blank' rel='noopener noreferrer'>
+          Verizon ↗
+        </a>
+      </p>
+
       <dl className='stats'>
         {STATS.map((s, i) => (
           <div key={s.n}>
@@ -220,6 +236,7 @@ export default function WhyNow() {
               <CountUp value={s.n} delay={i * 150} />
             </dt>
             <dd>
+              <span className='when'>{s.when}</span>
               <p>{s.text}</p>
               <a href={s.href} target='_blank' rel='noopener noreferrer'>
                 {s.source} ↗
@@ -483,6 +500,39 @@ export default function WhyNow() {
           white-space: nowrap;
         }
 
+        /* the bridge from the curve to the figures */
+        .gap {
+          margin: 8px 0 -8px;
+          max-width: 26em;
+          font-family: var(--font-display), Georgia, serif;
+          font-size: clamp(26px, 2.6vw, 36px);
+          line-height: 1.2;
+          letter-spacing: -0.01em;
+          color: var(--dim);
+          text-wrap: balance;
+        }
+        .gap .nb {
+          white-space: nowrap;
+        }
+        .gap b {
+          font-weight: 400;
+          color: var(--fg);
+        }
+        .gap a {
+          margin-left: 4px;
+          font: 500 11px/1 var(--font-mono), monospace;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          text-decoration: none;
+          white-space: nowrap;
+          vertical-align: middle;
+          color: var(--faint);
+          transition: color 0.2s ease;
+        }
+        .gap a:hover {
+          color: var(--fg);
+        }
+
         .stats {
           display: grid;
           grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -506,6 +556,12 @@ export default function WhyNow() {
           display: grid;
           gap: 10px;
           margin: 0;
+        }
+        .when {
+          font: 500 11px/1.2 var(--font-mono), monospace;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: var(--faint);
         }
         dd p {
           margin: 0;
