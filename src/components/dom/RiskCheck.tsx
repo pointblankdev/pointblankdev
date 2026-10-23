@@ -1,14 +1,14 @@
 import type { ReactNode } from 'react'
-import { ShieldAlert, ShieldCheck, ShieldQuestion } from 'lucide-react'
+import { ShieldAlert, ShieldCheck, ShieldQuestion, ShieldX } from 'lucide-react'
 import { BOOK, openCalendly } from '@/components/dom/Calendly'
 
 /*
- * Gut check: three buckets a business owner can place themselves in without knowing anything technical,
- * each with a three-step risk meter (level shown by label and icon too, never colour alone), then the ask.
+ * Gut check: four buckets a business owner can place themselves in without knowing anything technical,
+ * each with a four-step risk meter (level shown by label and icon too, never colour alone), then the ask.
  */
 
 type Bucket = {
-  level: 1 | 2 | 3
+  level: 1 | 2 | 3 | 4
   label: string
   icon: ReactNode
   title: string
@@ -17,6 +17,18 @@ type Bucket = {
 }
 
 const BUCKETS: Bucket[] = [
+  {
+    level: 4,
+    label: 'Critical',
+    icon: <ShieldX size={16} strokeWidth={1.8} />,
+    title: 'Bots are already knocking it over',
+    signs: [
+      'Your site goes down or crawls for no clear reason.',
+      'Traffic or hosting costs jumped, but sales didn’t.',
+      'Your host has warned you about strange traffic.',
+    ],
+    means: 'AI bots are already scanning you. If the scanning alone knocks you offline, a break-in is close behind.',
+  },
   {
     level: 3,
     label: 'High risk',
@@ -78,7 +90,7 @@ export default function RiskCheck() {
                 {b.label}
               </span>
               <span className='meter' aria-hidden='true'>
-                {[1, 2, 3].map((i) => (
+                {[1, 2, 3, 4].map((i) => (
                   <i key={i} className={i <= b.level ? 'on' : undefined} />
                 ))}
               </span>
@@ -114,7 +126,8 @@ export default function RiskCheck() {
           max-width: 1360px;
           margin: 0 auto;
           padding: 40px clamp(16px, 4vw, 56px) 120px;
-          --high: #e5484d;
+          --critical: #e5484d;
+          --high: #f76b15;
           --mid: #f5a524;
         }
         .head {
@@ -150,7 +163,7 @@ export default function RiskCheck() {
 
         .buckets {
           display: grid;
-          grid-template-columns: repeat(3, minmax(0, 1fr));
+          grid-template-columns: repeat(2, minmax(0, 1fr));
           gap: 20px;
           margin: 0;
           padding: 0;
@@ -166,6 +179,9 @@ export default function RiskCheck() {
           border-top: 2px solid var(--tone);
           border-radius: 16px;
           background: linear-gradient(180deg, #0d0e0c, #090a09);
+        }
+        .l4 {
+          --tone: var(--critical);
         }
         .l3 {
           --tone: var(--high);
@@ -306,7 +322,19 @@ export default function RiskCheck() {
             max-width: 620px;
           }
         }
+        /* the critical meter blinks, like an alarm */
+        .l4 .meter i.on {
+          animation: alarm 1.4s ease-in-out infinite;
+        }
+        @keyframes alarm {
+          50% {
+            opacity: 0.35;
+          }
+        }
         @media (prefers-reduced-motion: reduce) {
+          .l4 .meter i.on {
+            animation: none;
+          }
           .btn {
             transition: none;
           }
