@@ -9,6 +9,7 @@ import Contact from '@/components/dom/Contact'
 import About from '@/components/dom/About'
 import Process from '@/components/dom/Process'
 import RiskCheck from '@/components/dom/RiskCheck'
+import Drifter from '@/components/dom/Drifter'
 import CalendlyWidget, { BOOK, openCalendly } from '@/components/dom/Calendly'
 
 /*
@@ -96,7 +97,7 @@ export default function Page() {
               </div>
             </dl>
           </div>
-          <HeroCoin className='sculpture' shape='kite' />
+          <HeroCoin className='sculpture' shape='kite' previewable />
         </section>
 
         <section className='clients' aria-labelledby='clients-label'>
@@ -120,6 +121,11 @@ export default function Page() {
 
         <Contact email={EMAIL} book={BOOK} />
       </main>
+
+      {/* the emblem's other forms, drifting in beside the sections they echo */}
+      <Drifter section='services' shape='buckler' side='left' />
+      <Drifter section='risk' shape='padlock' side='right' />
+      <Drifter section='about' shape='coin' side='left' />
 
       <CalendlyWidget />
 

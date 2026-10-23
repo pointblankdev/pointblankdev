@@ -26,7 +26,8 @@ import { bucklerShield, kiteShield, padlock } from './emblems'
  * Everything is generated in code; only the dog's vector outline is loaded.
  *
  * The same stage can show the emblem's other forms (see ./emblems): a kite shield, a buckler, or a padlock
- * whose shackle opens and closes when clicked. The page picks one; ?hero=coin|kite|buckler|padlock previews another.
+ * whose shackle opens and closes when clicked. The page picks one; on the hero, ?hero=coin|kite|buckler|padlock
+ * previews another.
  */
 
 const RING_TEXT = 'POINT BLANK DEV · EST. 2020 · '
@@ -310,11 +311,13 @@ const EMBERS = Array.from({ length: 16 }, (_, i) => ({
   white: i % 3 === 0,
 }))
 
-export default function HeroCoin({ className, shape = 'coin' }: { className?: string; shape?: EmblemShape }) {
+type HeroCoinProps = { className?: string; shape?: EmblemShape; previewable?: boolean }
+
+export default function HeroCoin({ className, shape = 'coin', previewable = false }: HeroCoinProps) {
   const wrap = useRef<HTMLDivElement>(null!)
-  // ?hero=coin (or kite, buckler, padlock) previews another form without changing the page
+  // on the previewable one, ?hero=coin (or kite, buckler, padlock) shows another form without changing the page
   const [form] = useState<EmblemShape>(() => {
-    const q = new URLSearchParams(window.location.search).get('hero')
+    const q = previewable ? new URLSearchParams(window.location.search).get('hero') : null
     return q === 'coin' || (q && q in FORMS) ? (q as EmblemShape) : shape
   })
   const [font, setFont] = useState<string | null>(null)
