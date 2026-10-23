@@ -22,11 +22,7 @@ const BUCKETS: Bucket[] = [
     label: 'Critical',
     icon: <ShieldX size={16} strokeWidth={1.8} />,
     title: 'Bots are already knocking it over',
-    signs: [
-      'Your site goes down or crawls for no clear reason.',
-      'Traffic or hosting costs jumped, but sales didn’t.',
-      'Your host has warned you about strange traffic.',
-    ],
+    signs: ['Your site keeps going down.', 'Traffic spiked, sales didn’t.', 'Your host flagged odd traffic.'],
     means: 'AI bots are already scanning you. If the scanning alone knocks you offline, a break-in is close behind.',
   },
   {
@@ -34,11 +30,7 @@ const BUCKETS: Bucket[] = [
     label: 'High risk',
     icon: <ShieldAlert size={16} strokeWidth={1.8} />,
     title: 'Nobody has touched it in years',
-    signs: [
-      'The person who built it moved on.',
-      'It works, so nobody touches it.',
-      'You’re not sure who has the logins.',
-    ],
+    signs: ['The person who built it left.', 'It works, so it’s left alone.', 'Nobody knows the logins.'],
     means: 'It’s almost certainly missing years of security fixes. To an AI attacker, that’s an open door.',
   },
   {
@@ -46,11 +38,7 @@ const BUCKETS: Bucket[] = [
     label: 'Unknown risk',
     icon: <ShieldQuestion size={16} strokeWidth={1.8} />,
     title: 'Someone looks after it, but has anyone checked?',
-    signs: [
-      'A developer works on it, at least now and then.',
-      'Updates go in, but security isn’t anyone’s job.',
-      'You’ve never seen a security report.',
-    ],
+    signs: ['A developer works on it.', 'Security isn’t their job.', 'No security report, ever.'],
     means: 'Better than most, but busy builders miss gaps. You can’t know what’s open until someone looks.',
   },
 ]
@@ -304,7 +292,7 @@ export default function RiskCheck() {
           outline-offset: 3px;
         }
 
-        @media (max-width: 1000px) {
+        @media (max-width: 1100px) {
           .buckets {
             grid-template-columns: 1fr;
             max-width: 620px;
