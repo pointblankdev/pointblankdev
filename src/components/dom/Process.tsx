@@ -2,23 +2,23 @@ import Image from 'next/image'
 import ross from '@/assets/about/ross.jpg'
 
 /*
- * How we work: the three steps of a retainer, beside an example of the async thread clients see every day.
+ * How I work: the four steps of a retainer, beside an example of the async thread clients see every day.
  * The thread is an illustration, and it's labelled as one.
  */
 
 const STEPS: [string, string][] = [
-  ['Kickoff call', 'We learn your product, your goals and what done looks like, then agree on the first milestone.'],
+  ['Map', 'A kickoff call. I learn what you’ve built, what matters most and where it faces the internet.'],
+  ['Attack', 'I test it the way automated attackers will, then rank what I find by real risk, in plain words.'],
+  ['Fix', 'I ship the fixes myself, in your code, with tests, so nothing else breaks.'],
   [
-    'Async updates in Slack',
-    'We join your Slack. Short daily updates on what shipped and what’s next, without status meetings.',
+    'Watch',
+    'Short updates in your Slack, a weekly walkthrough, and a close eye on every new flaw that touches your stack.',
   ],
-  ['Weekly demo', 'Every week we show working software, not slides, and set priorities for the next one.'],
 ]
 
-const Avatar = ({ who }: { who: 'ross' | 'claude' | 'you' }) => (
+const Avatar = ({ who }: { who: 'ross' | 'you' }) => (
   <span className={`av ${who}`} aria-hidden='true'>
     {who === 'ross' && <Image src={ross} alt='' width={36} height={36} unoptimized />}
-    {who === 'claude' && '✦'}
     {who === 'you' && 'Y'}
     <style jsx>{`
       .av {
@@ -36,11 +36,6 @@ const Avatar = ({ who }: { who: 'ross' | 'claude' | 'you' }) => (
         height: 100%;
         object-fit: cover;
       }
-      .claude {
-        background: radial-gradient(circle at 35% 30%, #f0b894, #d97757 55%, #7a3520);
-        color: #fff8f1;
-        font-size: 18px;
-      }
       .you {
         background: linear-gradient(160deg, #4a4d54, #24262a);
         color: rgba(236, 236, 232, 0.85);
@@ -49,23 +44,22 @@ const Avatar = ({ who }: { who: 'ross' | 'claude' | 'you' }) => (
   </span>
 )
 
-type Message = { who: 'ross' | 'claude' | 'you'; name: string; time: string; badge?: string; text: string }
+type Message = { who: 'ross' | 'you'; name: string; time: string; text: string }
 
 const THREAD: Message[] = [
   {
     who: 'ross',
     name: 'Ross Ragsdale',
     time: '9:12 AM',
-    text: 'Morning! Yesterday: checkout moved to the new payment flow, tests green. Today: webhook retries and the refund edge case.',
+    text: 'Morning! Overnight I found an admin page on staging open to the whole internet. Closed it, and added a test so it stays closed.',
   },
   {
-    who: 'claude',
-    name: 'Claude',
+    who: 'ross',
+    name: 'Ross Ragsdale',
     time: '11:40 AM',
-    badge: 'AI',
-    text: 'Preview is up for the checkout branch. All 86 tests passing.',
+    text: 'Heads up: a new flaw was published this morning in a package you use. Already patched and deployed. Nothing for you to do.',
   },
-  { who: 'you', name: 'You', time: '11:52 AM', text: 'Looks great. Can we see it in Friday’s demo?' },
+  { who: 'you', name: 'You', time: '11:52 AM', text: 'That fast? Can we walk through it in Friday’s demo?' },
   { who: 'ross', name: 'Ross Ragsdale', time: '11:53 AM', text: 'Already on the list for Friday.' },
 ]
 
@@ -73,7 +67,7 @@ export default function Process() {
   return (
     <section className='process' id='process' aria-labelledby='process-title'>
       <div className='copy'>
-        <p className='eyebrow'>How we work</p>
+        <p className='eyebrow'>How I work</p>
         <h2 id='process-title'>
           No black box. <em>You see it every week.</em>
         </h2>
@@ -102,7 +96,6 @@ export default function Process() {
               <div className='msg'>
                 <p className='meta'>
                   <b>{m.name}</b>
-                  {m.badge && <span className='badge'>{m.badge}</span>}
                   <time>{m.time}</time>
                 </p>
                 <p className='text'>{m.text}</p>
@@ -233,14 +226,6 @@ export default function Process() {
         .meta b {
           font-weight: 600;
           font-size: 15px;
-        }
-        .badge {
-          padding: 2px 5px;
-          border-radius: 4px;
-          background: rgba(217, 119, 87, 0.18);
-          color: #f0b894;
-          font: 600 10px/1.2 var(--font-mono), monospace;
-          letter-spacing: 0.06em;
         }
         time {
           font-size: 12px;

@@ -4,6 +4,7 @@ import { Geist, Geist_Mono, Newsreader } from 'next/font/google'
 import ClientLogos from '@/components/dom/ClientLogos'
 import Services from '@/components/dom/Services'
 import Work from '@/components/dom/Work'
+import WhyNow from '@/components/dom/WhyNow'
 import Contact from '@/components/dom/Contact'
 import About from '@/components/dom/About'
 import Process from '@/components/dom/Process'
@@ -44,6 +45,7 @@ export default function Page() {
           POINT BLANK <span>DEV</span>
         </Link>
         <nav className='links' aria-label='Sections'>
+          <a href='#why-now'>Why now</a>
           <a href='#services'>Services</a>
           <a href='#work'>Work</a>
           <a href='#process'>Process</a>
@@ -58,15 +60,13 @@ export default function Page() {
       <main>
         <section className='hero'>
           <div className='copy'>
-            <p className='eyebrow'>Independent engineering studio · Since 2020</p>
+            <p className='eyebrow'>Security for the age of AI</p>
             <h1>
-              Senior engineering,
-              <br />
-              <em>on call.</em>
+              AI is finding flaws faster than ever. <em>I close yours first.</em>
             </h1>
             <p className='lede'>
-              We help teams ship AI features, full-stack products, online stores and security fixes. Deep experience in
-              enterprise tech and fast-moving startups.
+              Swarms of AI agents now probe every website and app on the internet, day and night, for one way in. I find
+              yours before they do, and I fix it myself.
             </p>
             <div className='actions'>
               <a className='btn' href={BOOK}>
@@ -79,7 +79,7 @@ export default function Page() {
             <dl className='facts'>
               <div>
                 <dt>$25M+</dt>
-                <dd>in transaction volume</dd>
+                <dd>moved through systems I built and run</dd>
               </div>
               <div>
                 <dt>20+ yrs</dt>
@@ -100,6 +100,8 @@ export default function Page() {
           </p>
           <ClientLogos />
         </section>
+
+        <WhyNow />
 
         <Services />
 
@@ -249,11 +251,13 @@ export default function Page() {
           margin: 0;
           font-family: var(--font-display), Georgia, serif;
           font-weight: 400;
-          font-size: clamp(48px, 6.4vw, 96px);
+          font-size: clamp(44px, 5.4vw, 80px);
           line-height: 0.98;
           letter-spacing: -0.025em;
         }
         h1 em {
+          display: block; /* the answer gets its own line */
+          margin-top: 0.08em;
           color: var(--dim);
         }
         .lede {
@@ -372,5 +376,5 @@ export default function Page() {
 }
 
 export async function getStaticProps() {
-  return { props: { title: 'Point Blank Dev · Senior engineering, on call' } }
+  return { props: { title: 'Point Blank Dev · Security for the age of AI' } }
 }

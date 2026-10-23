@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
-import { Layers, ShieldCheck, ShoppingBag, Sparkles } from 'lucide-react'
+import { BrainCircuit, Radar, ShieldCheck, Wrench } from 'lucide-react'
 
 /*
- * Services: four cards, each a promise, what's in it, and one real project as proof.
+ * Services: find, fix, AI, watch. Four cards, each a promise, what's in it, and one real project as proof.
  */
 
 type Service = {
@@ -16,56 +16,56 @@ type Service = {
 
 const SERVICES: Service[] = [
   {
-    icon: <Sparkles size={20} strokeWidth={1.6} />,
-    tag: 'AI integration',
-    title: 'AI your users actually use',
-    lede: 'Assistants, search and automation inside your product and your operations. Built properly, measured, and safe with your data.',
+    icon: <ShieldCheck size={20} strokeWidth={1.6} />,
+    tag: 'Security review',
+    title: 'Find the gaps first',
+    lede: 'I look at your product the way the AI swarms do, then hand you a clear fix list, ranked by risk and written in plain words.',
     items: [
-      ['Assistants and search', 'Chat and answers over your own data.'],
-      ['Workflow automation', 'Repetitive work off support, ops and sales.'],
-      ['Safe by design', 'Evaluation, guardrails and cost control from day one.'],
-      ['Ship, then improve', 'Live in weeks, better every sprint.'],
+      ['Seen from outside', 'What an attacker finds when they scan you.'],
+      ['Code and architecture', 'Where the real risks are in how it’s built.'],
+      ['Access and secrets', 'Logins, permissions and keys, hardened.'],
+      ['Dependencies and cloud', 'Old packages, open ports, misconfigurations.'],
     ],
-    recent: "LLM summarization pipeline for Blockbeat's AI news terminal",
+    recent: 'Financial systems at Discover',
   },
   {
-    icon: <Layers size={20} strokeWidth={1.6} />,
-    tag: 'Full-stack development',
-    title: 'From idea to production',
-    lede: 'Senior engineers who design, build and run the whole stack with you, from the first sketch to the pager.',
+    icon: <Wrench size={20} strokeWidth={1.6} />,
+    tag: 'Fixes',
+    title: 'Fixed, not just found',
+    lede: 'Most security work ends in a report. Mine ends in shipped fixes. I’ve built every layer myself, so I repair what I find, on your stack.',
     items: [
-      ['Web apps and APIs', 'Front end to database, built to scale.'],
-      ['Proven stack', 'TypeScript, React, Next.js, Node, Postgres, AWS.'],
-      ['Quality built in', 'Reviews, tests, CI/CD and docs as standard.'],
-      ['A team without hiring', 'Senior output from week one.'],
+      ['Fixes shipped', 'In your code, reviewed and tested.'],
+      ['Any stack', 'TypeScript, React, Next.js, Node, Postgres, AWS and more.'],
+      ['Nothing breaks', 'Tests and CI/CD around every change.'],
+      ['Safer from here', 'Better defaults so the same gap doesn’t come back.'],
     ],
     recent: 'Real-time tournament platform for Gather, with a 12-engineer team',
   },
   {
-    icon: <ShoppingBag size={20} strokeWidth={1.6} />,
-    tag: 'E-commerce',
-    title: 'Stores that sell',
-    lede: 'Storefronts, checkout and payments that turn visits into revenue, and the testing to prove it.',
+    icon: <BrainCircuit size={20} strokeWidth={1.6} />,
+    tag: 'AI security',
+    title: 'AI that works for you, not them',
+    lede: 'Chatbots, assistants and agents open new ways in. I build and review AI features so they don’t leak data or take actions they shouldn’t.',
     items: [
-      ['Custom storefronts', 'Fast, on-brand shopping around your products.'],
-      ['Payments and subscriptions', 'Checkout, billing, taxes and refunds, handled.'],
-      ['Integrations', 'Inventory, shipping and CRM, connected.'],
-      ['Conversion testing', 'Edge A/B tests, measured by what sells.'],
+      ['Hijack attempts', 'Hidden instructions that try to take over your AI.'],
+      ['Data leaks', 'Your AI only sees, and says, what it should.'],
+      ['Agent permissions', 'Agents get only the access they need.'],
+      ['AI-built code', 'Apps built fast with AI tools, checked for what they missed.'],
     ],
-    recent: 'Edge A/B testing and conversion work with Apex Growth',
+    recent: 'AI summarization pipeline for Blockbeat’s news terminal',
   },
   {
-    icon: <ShieldCheck size={20} strokeWidth={1.6} />,
-    tag: 'Security review',
-    title: 'Find the gaps first',
-    lede: 'Practical security reviews that end in a clear, ranked fix list, before someone else finds the gaps.',
+    icon: <Radar size={20} strokeWidth={1.6} />,
+    tag: 'Ongoing watch',
+    title: 'Watched, every week',
+    lede: 'Thousands of new flaws are published every month, so a one-time check goes stale fast. On retainer, I keep watching and act the day something new touches your stack.',
     items: [
-      ['Code and architecture', 'Where the real risks are in how it’s built.'],
-      ['Access and secrets', 'Auth, permissions and key handling, hardened.'],
-      ['Dependencies and cloud', 'Old packages, open ports, misconfigurations.'],
-      ['Fixes, not just findings', 'Ranked by risk, with help shipping them.'],
+      ['New-flaw alerts', 'When something you use is hit, you hear it from me first.'],
+      ['Kept current', 'Packages and servers patched before attackers arrive.'],
+      ['Weekly check-in', 'What changed, what I fixed, what’s next.'],
+      ['On call', 'If something goes wrong, I’m the first one in.'],
     ],
-    recent: 'Discover financial systems and a $25M+ DeFi platform',
+    recent: 'Charisma, the $25M+ DeFi platform I built and still run',
   },
 ]
 
@@ -75,7 +75,7 @@ export default function Services() {
       <header className='head'>
         <p className='eyebrow'>Services</p>
         <h2 id='services-title'>
-          Senior help, <em>where it counts.</em>
+          Find it. Fix it. <em>Keep watching.</em>
         </h2>
       </header>
 

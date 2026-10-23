@@ -82,7 +82,7 @@ export default function Work() {
           <h2 id='work-title'>
             Shipped, <em>and still running.</em>
           </h2>
-          <p className='note'>A few of our public products. Most client work lives behind logins.</p>
+          <p className='note'>A few public products I’ve built. Most client work stays private, as it should.</p>
         </div>
         <div className='arrows'>
           <button type='button' aria-label='Previous project' disabled={edge.start} onClick={() => step(-1)}>

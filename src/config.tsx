@@ -3,7 +3,7 @@ import Head from 'next/head'
 const titleDefault = 'Point Blank Dev'
 const url = 'https://www.pointblankdev.com/'
 const description =
-  'Senior engineering on call: AI features, full-stack products, online stores and security reviews for startups. An independent studio since 2020.'
+  'AI agents now probe every app on the internet for a way in. Ross Ragsdale finds the gaps first, and fixes them himself. Security retainers from $5K a month.'
 const author = 'Ross Ragsdale'
 
 export default function Header({ title = titleDefault }) {
@@ -18,7 +18,7 @@ export default function Header({ title = titleDefault }) {
       <meta name='description' content={description} />
       <meta
         name='keywords'
-        content='software consultancy,AI integration,full-stack development,e-commerce,security consulting,Point Blank Dev'
+        content='AI security,application security,security review,vulnerability fixes,AI agent security,fractional CTO,Point Blank Dev'
       />
       <meta name='robots' content='index,follow' />
       <link rel='canonical' href={url} />
@@ -30,7 +30,10 @@ export default function Header({ title = titleDefault }) {
       <meta property='og:image' content={`${url}og.png`} />
       <meta property='og:image:width' content='1200' />
       <meta property='og:image:height' content='630' />
-      <meta property='og:image:alt' content='Point Blank Dev: Senior engineering, on call.' />
+      <meta
+        property='og:image:alt'
+        content='Point Blank Dev: AI is finding flaws faster than ever. I close yours first.'
+      />
       <meta property='og:site_name' content={titleDefault} />
       <meta property='og:description' content={description} />
 
