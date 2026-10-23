@@ -3,7 +3,7 @@ import Head from 'next/head'
 const titleDefault = 'Point Blank Dev'
 const url = 'https://www.pointblankdev.com/'
 const description =
-  'It happens overnight: servers locked, data gone, ransom due. AI agents now hunt every app for a way in. Ross Ragsdale finds it and shuts it, before they do.'
+  'You lock your doors. Your software is wide open. AI agents now try every app for a way in; Ross Ragsdale finds the open doors and locks them first.'
 const author = 'Ross Ragsdale'
 
 export default function Header({ title = titleDefault }) {
@@ -30,7 +30,7 @@ export default function Header({ title = titleDefault }) {
       <meta property='og:image' content={`${url}og.png`} />
       <meta property='og:image:width' content='1200' />
       <meta property='og:image:height' content='630' />
-      <meta property='og:image:alt' content='Point Blank Dev: Locked out. Data gone. Ransom due. Don’t get burned.' />
+      <meta property='og:image:alt' content='Point Blank Dev: You lock your doors. Your software is wide open.' />
       <meta property='og:site_name' content={titleDefault} />
       <meta property='og:description' content={description} />
 

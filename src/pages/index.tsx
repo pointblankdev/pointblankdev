@@ -62,17 +62,16 @@ export default function Page() {
           <div className='copy'>
             <p className='eyebrow'>Security for the age of AI</p>
             <h1>
-              Locked out.
-              <br />
-              Data gone.
-              <br />
-              Ransom due.
-              <em>Don’t get burned.</em>
+              You lock your doors.{' '}
+              <em>
+                Your software is
+                <br />
+                wide open.
+              </em>
             </h1>
             <p className='lede'>
-              It happens overnight, with no warning: servers locked, customer data for sale, lawsuits on the way.
-              Everything you built, gone. Swarms of AI agents now hunt every app for one way in. I find it and shut it,
-              before they do.
+              Swarms of AI agents now try every app on the internet, day and night, for one way in. One open door, and
+              everything you’ve built can be gone in an instant. I find the open doors and lock them, before they do.
             </p>
             <div className='actions'>
               <a className='btn' href={BOOK}>
@@ -260,6 +259,7 @@ export default function Page() {
           font-size: clamp(44px, 5.4vw, 80px);
           line-height: 0.98;
           letter-spacing: -0.025em;
+          text-wrap: balance; /* on phones: "You lock / your doors." rather than a lone "doors." */
         }
         h1 em {
           display: block; /* the answer gets its own line */
