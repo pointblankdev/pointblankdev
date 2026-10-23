@@ -30,7 +30,7 @@ export default function Contact({ email, book }: { email: string; book: string }
         <div className='body'>
           <p className='eyebrow'>Book a call</p>
           <h2 id='contact-title'>
-            Find it <em>before they do.</em>
+            Don’t wait for <em>the ransom note.</em>
           </h2>
           <p className='lede'>
             Retainers from $5K a month. A senior security engineer on your side, without a full-time hire.

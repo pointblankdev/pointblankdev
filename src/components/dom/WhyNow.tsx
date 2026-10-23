@@ -35,32 +35,33 @@ const STATS: Stat[] = [
   },
 ]
 
-// Critical-severity CVEs published per month from January 2024 (Epoch AI's CVE data, updated Oct 23, 2026).
-// The last month is partial: October through the 22nd.
-const CRITICAL = [
-  292, 333, 291, 282, 401, 297, 272, 307, 276, 360, 352, 296, 377, 264, 397, 318, 348, 282, 363, 365, 294, 304, 254,
-  418, 420, 415, 620, 557, 673, 929, 1313, 1813, 1557, 1194,
+// High- and critical-severity CVEs published per month from January 2024 (Epoch AI's CVE data, updated
+// Oct 23, 2026). The last month is partial, October through the 22nd; PACE scales it to all 31 days.
+const SERIOUS = [
+  1207, 1220, 1411, 1534, 2292, 1222, 1401, 1301, 1163, 1635, 1755, 1425, 1804, 1471, 1808, 1770, 1465, 1359, 1667,
+  1499, 1570, 1718, 1245, 2228, 2035, 1905, 2926, 2561, 3247, 4126, 5421, 7048, 7748, 6443,
 ]
-const AVG_2025 = 332
-const TOP = 2000
-const TICKS = [0, 500, 1000, 1500, 2000]
+const PACE = Math.round((SERIOUS[SERIOUS.length - 1] * 31) / 22)
+const AVG_2025 = 1633
+const TOP = 10000
+const TICKS = [0, 2500, 5000, 7500, 10000]
 const MONTH = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
-const MONTHS = CRITICAL.map((n, i) => ({
+const MONTHS = SERIOUS.map((n, i) => ({
   n,
   month: MONTH[i % 12],
   year: 2024 + Math.floor(i / 12),
-  partial: i === CRITICAL.length - 1,
-  peak: n === Math.max(...CRITICAL),
+  partial: i === SERIOUS.length - 1,
 }))
 
 // the average line spans only 2025's twelve columns
 const AVG_SPAN = {
-  left: `${(12 / CRITICAL.length) * 100}%`,
-  right: `${((CRITICAL.length - 24) / CRITICAL.length) * 100}%`,
+  left: `${(12 / SERIOUS.length) * 100}%`,
+  right: `${((SERIOUS.length - 24) / SERIOUS.length) * 100}%`,
 }
 
 const fmt = (n: number) => n.toLocaleString('en-US')
+const about = (n: number) => `~${fmt(Math.round(n / 100) * 100)}`
 const tick = (n: number) => (n >= 1000 ? `${n / 1000}K` : String(n))
 const pct = (n: number) => `${(n / TOP) * 100}%`
 
@@ -80,8 +81,10 @@ export default function WhyNow() {
 
       <figure className='chart'>
         <figcaption className='cap'>
-          <span className='title'>Critical software flaws published each month</span>
-          <span className='sub'>January 2024 to October 2026 · October counts through the 22nd</span>
+          <span className='title'>Serious software flaws published each month</span>
+          <span className='sub'>
+            High and critical severity, January 2024 to October 2026. October’s outline is its full-month pace.
+          </span>
         </figcaption>
 
         <div className='plot' aria-hidden='true'>
@@ -91,18 +94,21 @@ export default function WhyNow() {
             </div>
           ))}
           <div className='avg' style={{ bottom: pct(AVG_2025), left: AVG_SPAN.left, right: AVG_SPAN.right }}>
-            <span>2025 average: {AVG_2025}</span>
+            <span>2025 average: {fmt(AVG_2025)}</span>
           </div>
           <ol className='bars'>
             {MONTHS.map((m) => (
-              <li key={`${m.year}-${m.month}`} className={m.partial ? 'partial' : undefined}>
-                <span className='bar' style={{ height: pct(m.n) }}>
-                  {m.peak && <b className='peak'>{fmt(m.n)}</b>}
-                </span>
+              <li key={`${m.year}-${m.month}`}>
+                {m.partial && (
+                  <span className='pace' style={{ height: pct(PACE) }}>
+                    <b className='peak'>{about(PACE)} on pace</b>
+                  </span>
+                )}
+                <span className='bar' style={{ height: pct(m.n) }} />
                 {m.month === 'Jan' && <span className='yr'>{m.year}</span>}
                 <span className='tip'>
                   {m.month} {m.year} · {fmt(m.n)}
-                  {m.partial && ' so far'}
+                  {m.partial && ` so far, ${about(PACE)} on pace`}
                 </span>
               </li>
             ))}
@@ -111,11 +117,13 @@ export default function WhyNow() {
 
         <div className='sr'>
           <table>
-            <caption>Critical software flaws published each month, January 2024 to October 2026</caption>
+            <caption>
+              Serious software flaws (high and critical) published each month, January 2024 to October 2026
+            </caption>
             <thead>
               <tr>
                 <th scope='col'>Month</th>
-                <th scope='col'>Critical flaws</th>
+                <th scope='col'>Serious flaws</th>
               </tr>
             </thead>
             <tbody>
@@ -126,7 +134,7 @@ export default function WhyNow() {
                   </th>
                   <td>
                     {fmt(m.n)}
-                    {m.partial && ' (through the 22nd)'}
+                    {m.partial && ` (through the 22nd; on pace for ${about(PACE)})`}
                   </td>
                 </tr>
               ))}
@@ -275,17 +283,26 @@ export default function WhyNow() {
           opacity: 0.85;
           transition: opacity 0.2s ease;
         }
-        .partial .bar {
-          opacity: 0.4;
-        }
         .bars li:hover .bar {
           opacity: 1;
         }
+        /* October's full-month pace: an outline behind the real count so far */
+        .pace {
+          position: absolute;
+          bottom: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 100%;
+          max-width: 24px;
+          border: 1px solid rgba(141, 198, 63, 0.55);
+          border-bottom: 0;
+          border-radius: 4px 4px 0 0;
+          background: rgba(141, 198, 63, 0.08);
+        }
         .peak {
           position: absolute;
-          left: 50%;
+          right: 0;
           bottom: calc(100% + 8px);
-          transform: translateX(-50%);
           font: 500 13px/1 var(--font-sans), sans-serif;
           color: var(--fg);
           white-space: nowrap;

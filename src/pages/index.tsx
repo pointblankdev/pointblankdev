@@ -62,11 +62,17 @@ export default function Page() {
           <div className='copy'>
             <p className='eyebrow'>Security for the age of AI</p>
             <h1>
-              AI is finding flaws faster than ever. <em>I close yours first.</em>
+              Locked out.
+              <br />
+              Data gone.
+              <br />
+              Ransom due.
+              <em>Don’t get burned.</em>
             </h1>
             <p className='lede'>
-              Swarms of AI agents now probe every website and app on the internet, day and night, for one way in. I find
-              yours before they do, and I fix it myself.
+              It happens overnight, with no warning: servers locked, customer data for sale, lawsuits on the way.
+              Everything you built, gone. Swarms of AI agents now hunt every app for one way in. I find it and shut it,
+              before they do.
             </p>
             <div className='actions'>
               <a className='btn' href={BOOK}>
