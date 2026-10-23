@@ -20,7 +20,7 @@ const display = Newsreader({ subsets: ['latin'], style: ['normal', 'italic'], va
 const sans = Geist({ subsets: ['latin'], variable: '--font-sans' })
 const mono = Geist_Mono({ subsets: ['latin'], variable: '--font-mono' })
 
-// Text renders first; the coin fades in once it's built
+// Text renders first; the emblem (the kite shield) fades in once it's built
 const HeroCoin = dynamic(() => import('@/components/canvas/HeroCoin'), { ssr: false })
 
 const EMAIL = 'ross@pointblankdev.com'
@@ -96,7 +96,7 @@ export default function Page() {
               </div>
             </dl>
           </div>
-          <HeroCoin className='sculpture' />
+          <HeroCoin className='sculpture' shape='kite' />
         </section>
 
         <section className='clients' aria-labelledby='clients-label'>
