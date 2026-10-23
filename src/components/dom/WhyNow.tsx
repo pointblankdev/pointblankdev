@@ -1,6 +1,7 @@
 /*
  * Why now: the curve, then the shift in four numbers, each from recent reporting and linked to its source.
  * The chart is plain HTML columns, so it stays crisp at any width; a hidden table carries the same numbers.
+ * Everything here is the threat, so it's in the page's red, the counterpart to the green of the fix.
  */
 
 type Stat = { n: string; text: string; source: string; href: string }
@@ -279,7 +280,7 @@ export default function WhyNow() {
           width: 100%;
           max-width: 24px;
           border-radius: 4px 4px 0 0;
-          background: var(--green);
+          background: var(--red);
           opacity: 0.85;
           transition: opacity 0.2s ease;
         }
@@ -294,10 +295,10 @@ export default function WhyNow() {
           transform: translateX(-50%);
           width: 100%;
           max-width: 24px;
-          border: 1px solid rgba(141, 198, 63, 0.55);
+          border: 1px solid rgba(229, 72, 77, 0.6);
           border-bottom: 0;
           border-radius: 4px 4px 0 0;
-          background: rgba(141, 198, 63, 0.08);
+          background: rgba(229, 72, 77, 0.1);
         }
         .peak {
           position: absolute;
@@ -383,7 +384,7 @@ export default function WhyNow() {
           font-size: clamp(48px, 4.6vw, 64px);
           line-height: 1;
           letter-spacing: -0.02em;
-          color: var(--green);
+          color: var(--red);
         }
         dd {
           display: grid;

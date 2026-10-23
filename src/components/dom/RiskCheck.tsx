@@ -102,7 +102,7 @@ export default function RiskCheck() {
           max-width: 1360px;
           margin: 0 auto;
           padding: 40px clamp(16px, 4vw, 56px) 120px;
-          --critical: #e5484d;
+          --critical: var(--red);
           --high: #f76b15;
           --unknown: #e8c547;
         }

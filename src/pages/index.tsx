@@ -140,6 +140,7 @@ export default function Page() {
           --faint: #5a5c56;
           --line: #1c1d1b;
           --green: #8dc63f;
+          --red: #e5484d; /* the threat: scary numbers and critical risk, opposite the green */
           color-scheme: dark;
         }
         html,
