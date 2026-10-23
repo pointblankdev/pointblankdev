@@ -1,49 +1,68 @@
 import useReveal from '@/hooks/useReveal'
-import CountUp from '@/components/dom/CountUp'
 
 /*
- * Why now: the curve, then the gap. The chart stacks every month's flaws by severity in a warm ramp, worst on top,
- * so each spike ends in dark red; it's plain HTML columns, crisp at any width, and a hidden table carries the same
- * numbers. Under it, one line on why patching on schedule no longer cuts it, then four figures from the past few
- * weeks, each dated, since the AI-driven shift is newer than any annual report. They count up on first view.
+ * Why now: the curve, then the pace of it. The chart stacks every month's flaws by severity in a warm ramp, worst
+ * on top, so each spike ends in dark red; it's plain HTML columns, crisp at any width, and a hidden table carries
+ * the same numbers. Under it, this year's AI-driven events on a timeline (the shift is newer than any annual report),
+ * the days between them shrinking, the latest pulsing; then one line on why patching on schedule no longer cuts it.
+ * The chart draws itself and the timeline runs out the first time each comes into view.
  */
 
-type Stat = { n: string; when: string; text: string; source: string; href: string }
+type Event = { date: string; title: string; text: string; source: string; href: string }
 
 const DBIR = 'https://www.verizon.com/business/resources/reports/dbir/'
 const GTIG = 'https://www.helpnetsecurity.com/2026/10/01/google-ai-discovered-vulnerabilities-remote-code-execution/'
 const EPOCH = 'https://epoch.ai/data/cve'
 
-const STATS: Stat[] = [
+const EVENTS: Event[] = [
   {
-    n: '~5%',
-    when: 'Oct 2026',
-    text: 'of all critical software flaws published since 2020 came out in just three weeks.',
-    source: 'Epoch AI',
-    href: EPOCH,
+    date: '2026-04-07',
+    title: 'Anthropic holds back its newest AI',
+    text: 'It found thousands of serious hidden flaws in major software, some decades old. Too risky to release.',
+    source: 'The Hacker News',
+    href: 'https://thehackernews.com/2026/04/anthropics-claude-mythos-finds.html',
   },
   {
-    n: '~70%',
-    when: 'Oct 21, 2026',
-    text: 'of websites run on PHP. AI just found two flaws in it that hand attackers the whole server.',
-    source: 'Axios',
-    href: 'https://www.yahoo.com/news/world/articles/black-october-why-bugs-discovered-180131955.html',
-  },
-  {
-    n: '26 sec',
-    when: 'Sept 2026',
-    text: 'for one attacker’s swarm of AI agents to break into 11 organizations at once.',
+    date: '2026-09-09',
+    title: 'An AI swarm hits 395 organizations',
+    text: 'One attacker, hundreds of AI agents, 48 countries. A school fell in 7 minutes.',
     source: 'VentureBeat',
     href: 'https://venturebeat.com/security/ai-agents-breached-395-organizations-using-credentials-your-iam-policy-still-treats-as-human',
   },
   {
-    n: '~$50',
-    when: 'Oct 2026',
-    text: 'what each successful break-in cost one attacker in AI fees, across 1,200+ company websites.',
+    date: '2026-10-02',
+    title: 'AI agents take on 1,200+ websites',
+    text: 'They broke into more than 100 companies, at about $50 a break-in.',
     source: 'The Hacker News',
     href: 'https://thehackernews.com/2026/10/hackers-use-autonomous-ai-agents-to.html',
   },
+  {
+    date: '2026-10-21',
+    title: '“Black October”: patch PHP or go offline',
+    text: 'AI finds two takeover flaws in PHP, which runs ~70% of websites. The NSA tells anyone who can’t patch to go dark.',
+    source: 'Axios',
+    href: 'https://www.axios.com/2026/10/22/php-vulnerability-security-update-websites',
+  },
+  {
+    date: '2026-10-22',
+    title: '“It was always going to be this way. We tried to warn the world.”',
+    text: 'Anthropic’s deputy security chief, Jason Clinton: it will get a lot worse before it gets better.',
+    source: 'OfficeChai',
+    href: 'https://officechai.com/ai/it-was-always-going-to-be-this-way-we-tried-to-warn-the-world-anthropics-deputy-ciso-jason-clinton-on-recent-cyberattacks/',
+  },
+  {
+    date: '2026-10-23',
+    title: '3% of all critical flaws ever found turned up in the last month',
+    text: 'So says Chris Krebs, former director of CISA, the US cyber defense agency.',
+    source: 'CNBC',
+    href: 'https://www.cnbc.com/2026/10/23/php-vulnerabilities-ai-cybersecurity.html',
+  },
 ]
+
+const daysBetween = (a: string, b: string) => Math.round((Date.parse(b) - Date.parse(a)) / 86_400_000)
+const later = (days: number) => `${days} ${days === 1 ? 'day' : 'days'} later`
+const shortDate = (d: string) =>
+  new Date(`${d}T12:00:00Z`).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' })
 
 // Software flaws (CVEs) published per month from January 2024, by severity: critical, high, medium, low, and not
 // yet rated (Epoch AI's CVE data, updated Oct 23, 2026). The last month is partial, October through the 22nd;
@@ -121,6 +140,7 @@ const pct = (n: number) => `${(n / TOP) * 100}%`
 
 export default function WhyNow() {
   const chart = useReveal<HTMLElement>()
+  const timeline = useReveal<HTMLOListElement>()
   return (
     <section className='why' id='why-now' aria-labelledby='why-title'>
       <header className='head'>
@@ -218,6 +238,28 @@ export default function WhyNow() {
         </a>
       </figure>
 
+      <div className='fall'>
+        <p className='kicker'>2026, so far</p>
+        <ol className='timeline' ref={timeline}>
+          {EVENTS.map((e, i) => (
+            <li
+              key={e.date}
+              className={i === EVENTS.length - 1 ? 'latest' : undefined}
+              style={{ ['--i' as string]: i }}
+            >
+              {i > 0 && <span className='later'>{later(daysBetween(EVENTS[i - 1].date, e.date))}</span>}
+              <time dateTime={e.date}>{shortDate(e.date)}</time>
+              <span className='node' aria-hidden='true' />
+              <h3>{e.title}</h3>
+              <p>{e.text}</p>
+              <a href={e.href} target='_blank' rel='noopener noreferrer'>
+                {e.source} ↗
+              </a>
+            </li>
+          ))}
+        </ol>
+      </div>
+
       <p className='gap'>
         Patching on schedule used to be enough. Now an <span className='nb'>AI-found</span> flaw can be under attack
         within <b>4 days</b>, and the typical company takes <b>43</b> to fix one.{' '}
@@ -228,23 +270,6 @@ export default function WhyNow() {
           Verizon ↗
         </a>
       </p>
-
-      <dl className='stats'>
-        {STATS.map((s, i) => (
-          <div key={s.n}>
-            <dt>
-              <CountUp value={s.n} delay={i * 150} />
-            </dt>
-            <dd>
-              <span className='when'>{s.when}</span>
-              <p>{s.text}</p>
-              <a href={s.href} target='_blank' rel='noopener noreferrer'>
-                {s.source} ↗
-              </a>
-            </dd>
-          </div>
-        ))}
-      </dl>
 
       <style jsx>{`
         .why {
@@ -500,9 +525,138 @@ export default function WhyNow() {
           white-space: nowrap;
         }
 
-        /* the bridge from the curve to the figures */
+        /* this fall, on a rail: dates above, each event below its node, the days between them on the rail */
+        .fall {
+          display: grid;
+          gap: 26px;
+        }
+        .kicker {
+          margin: 0;
+          font: 500 12px/1 var(--font-mono), monospace;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: var(--dim);
+        }
+        .timeline {
+          --rail: 36px;
+          position: relative;
+          display: grid;
+          grid-template-columns: repeat(6, minmax(0, 1fr));
+          gap: 24px;
+          margin: 0;
+          padding: 0;
+          list-style: none;
+        }
+        .timeline::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: var(--rail);
+          height: 1px;
+          background: linear-gradient(90deg, var(--line), rgba(229, 72, 77, 0.7));
+        }
+        .timeline li {
+          position: relative;
+          display: grid;
+          align-content: start;
+          gap: 8px;
+          min-width: 0;
+          padding-top: calc(var(--rail) + 26px);
+        }
+        .timeline time {
+          position: absolute;
+          top: 0;
+          left: 0;
+          font: 500 12px/1 var(--font-mono), monospace;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          color: var(--fg);
+        }
+        .node {
+          position: absolute;
+          top: calc(var(--rail) - 5px);
+          left: 0;
+          width: 11px;
+          height: 11px;
+          border-radius: 50%;
+          background: var(--dim);
+          box-shadow: 0 0 0 4px var(--bg);
+        }
+        .latest .node {
+          background: var(--red);
+          animation: ping 1.8s ease-out infinite;
+        }
+        /* the days since the last one, centred on the rail between the two nodes */
+        .later {
+          position: absolute;
+          top: calc(var(--rail) - 22px);
+          left: calc(-50% - 12px);
+          transform: translateX(-50%);
+          font: 500 11px/1 var(--font-mono), monospace;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          white-space: nowrap;
+          color: var(--faint);
+        }
+        .timeline h3 {
+          margin: 0;
+          font-family: var(--font-display), Georgia, serif;
+          font-weight: 400;
+          font-size: 20px;
+          line-height: 1.15;
+          text-wrap: balance;
+        }
+        .timeline p {
+          margin: 0;
+          font-size: 14px;
+          line-height: 1.5;
+          color: var(--dim);
+        }
+        .timeline a {
+          justify-self: start;
+          margin-top: 2px;
+          font: 500 11px/1 var(--font-mono), monospace;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          text-decoration: none;
+          color: var(--faint);
+          transition: color 0.2s ease;
+        }
+        .timeline a:hover {
+          color: var(--fg);
+        }
+        /* on first view the rail runs out and the events arrive one after another */
+        .timeline[data-reveal]::before {
+          transform: scaleX(0);
+          transform-origin: left;
+        }
+        .timeline[data-reveal] li {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        .timeline[data-reveal='shown']::before {
+          transform: none;
+          transition: transform 1.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .timeline[data-reveal='shown'] li {
+          opacity: 1;
+          transform: none;
+          transition: opacity 0.5s ease, transform 0.5s ease;
+          transition-delay: calc(var(--i) * 240ms + 150ms);
+        }
+        @keyframes ping {
+          from {
+            box-shadow: 0 0 0 4px var(--bg), 0 0 0 4px rgba(229, 72, 77, 0.5);
+          }
+          to {
+            box-shadow: 0 0 0 4px var(--bg), 0 0 0 16px rgba(229, 72, 77, 0);
+          }
+        }
+
+        /* the closing line: why patching on schedule no longer cuts it */
         .gap {
-          margin: 8px 0 -8px;
+          margin: 12px 0 0;
           max-width: 26em;
           font-family: var(--font-display), Georgia, serif;
           font-size: clamp(26px, 2.6vw, 36px);
@@ -533,64 +687,53 @@ export default function WhyNow() {
           color: var(--fg);
         }
 
-        .stats {
-          display: grid;
-          grid-template-columns: repeat(4, minmax(0, 1fr));
-          gap: 24px 32px;
-          margin: 0;
-        }
-        .stats > div {
-          display: grid;
-          align-content: start;
-          gap: 14px;
-          padding-top: 24px;
-          border-top: 1px solid var(--line);
-        }
-        dt {
-          font-family: var(--font-display), Georgia, serif;
-          font-size: clamp(48px, 4.6vw, 64px);
-          line-height: 1;
-          letter-spacing: -0.02em;
-        }
-        dd {
-          display: grid;
-          gap: 10px;
-          margin: 0;
-        }
-        .when {
-          font: 500 11px/1.2 var(--font-mono), monospace;
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-          color: var(--faint);
-        }
-        dd p {
-          margin: 0;
-          font-size: 15px;
-          line-height: 1.55;
-          color: var(--dim);
-        }
-        dd a {
-          justify-self: start;
-          font: 500 11px/1 var(--font-mono), monospace;
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-          text-decoration: none;
-          color: var(--faint);
-          transition: color 0.2s ease;
-        }
-        dd a:hover {
-          color: var(--fg);
-        }
-
-        @media (max-width: 980px) {
-          .stats {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+        /* narrower screens: the rail turns and runs down the left */
+        @media (max-width: 1240px) {
+          .timeline {
+            --rail: 0px;
+            grid-template-columns: 1fr;
+            gap: 0;
+            padding-left: 30px;
+          }
+          .timeline::before {
+            left: 5px;
+            right: auto;
+            top: 6px;
+            bottom: 10px;
+            width: 1px;
+            height: auto;
+            background: linear-gradient(180deg, var(--line), rgba(229, 72, 77, 0.7));
+          }
+          .timeline[data-reveal]::before {
+            transform: scaleY(0);
+            transform-origin: top;
+          }
+          .timeline[data-reveal='shown']::before {
+            transform: none;
+          }
+          .timeline li {
+            padding: 0 0 30px;
+          }
+          .timeline li:last-child {
+            padding-bottom: 0;
+          }
+          .timeline time {
+            position: static;
+          }
+          .node {
+            top: 0;
+            left: -30px;
+          }
+          .later ~ .node {
+            top: 19px; /* level with the date, below the days-later line */
+          }
+          .later {
+            position: static;
+            transform: none;
+            margin-bottom: 4px;
           }
         }
         @media (max-width: 520px) {
-          .stats {
-            grid-template-columns: 1fr;
-          }
           .bars {
             gap: 1px;
           }
@@ -599,6 +742,9 @@ export default function WhyNow() {
           .bar,
           .tip {
             transition: none;
+          }
+          .latest .node {
+            animation: none;
           }
         }
       `}</style>
