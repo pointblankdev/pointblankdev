@@ -1,14 +1,14 @@
 import type { ReactNode } from 'react'
-import { ShieldAlert, ShieldCheck, ShieldQuestion, ShieldX } from 'lucide-react'
+import { ShieldAlert, ShieldQuestion, ShieldX } from 'lucide-react'
 import { BOOK, openCalendly } from '@/components/dom/Calendly'
 
 /*
- * Gut check: four buckets a business owner can place themselves in without knowing anything technical,
- * each with a four-step risk meter (level shown by label and icon too, never colour alone), then the ask.
+ * Gut check: three buckets a business owner can place themselves in without knowing anything technical,
+ * each with a three-step risk meter (level shown by label and icon too, never colour alone), then the ask.
  */
 
 type Bucket = {
-  level: 1 | 2 | 3 | 4
+  level: 1 | 2 | 3
   label: string
   icon: ReactNode
   title: string
@@ -18,7 +18,7 @@ type Bucket = {
 
 const BUCKETS: Bucket[] = [
   {
-    level: 4,
+    level: 3,
     label: 'Critical',
     icon: <ShieldX size={16} strokeWidth={1.8} />,
     title: 'Bots are already knocking it over',
@@ -30,7 +30,7 @@ const BUCKETS: Bucket[] = [
     means: 'AI bots are already scanning you. If the scanning alone knocks you offline, a break-in is close behind.',
   },
   {
-    level: 3,
+    level: 2,
     label: 'High risk',
     icon: <ShieldAlert size={16} strokeWidth={1.8} />,
     title: 'Nobody has touched it in years',
@@ -42,28 +42,16 @@ const BUCKETS: Bucket[] = [
     means: 'It’s almost certainly missing years of security fixes. To an AI attacker, that’s an open door.',
   },
   {
-    level: 2,
+    level: 1,
     label: 'Unknown risk',
     icon: <ShieldQuestion size={16} strokeWidth={1.8} />,
-    title: 'Someone works on it, but security isn’t their job',
+    title: 'Someone looks after it, but has anyone checked?',
     signs: [
-      'Your developer is busy building features.',
-      'No one has ever checked it for security.',
+      'A developer works on it, at least now and then.',
+      'Updates go in, but security isn’t anyone’s job.',
       'You’ve never seen a security report.',
     ],
-    means: 'New work gets stacked on old gaps. You can’t know what’s open until someone looks.',
-  },
-  {
-    level: 1,
-    label: 'Lower risk',
-    icon: <ShieldCheck size={16} strokeWidth={1.8} />,
-    title: 'Checked recently, and kept up',
-    signs: [
-      'Updates go in every month.',
-      'It was security-tested this year.',
-      'You’d know within a day if someone broke in.',
-    ],
-    means: 'You’re ahead of most. New flaws land every day, so it still needs a regular look.',
+    means: 'Better than most, but busy builders miss gaps. You can’t know what’s open until someone looks.',
   },
 ]
 
@@ -90,7 +78,7 @@ export default function RiskCheck() {
                 {b.label}
               </span>
               <span className='meter' aria-hidden='true'>
-                {[1, 2, 3, 4].map((i) => (
+                {[1, 2, 3].map((i) => (
                   <i key={i} className={i <= b.level ? 'on' : undefined} />
                 ))}
               </span>
@@ -128,7 +116,7 @@ export default function RiskCheck() {
           padding: 40px clamp(16px, 4vw, 56px) 120px;
           --critical: #e5484d;
           --high: #f76b15;
-          --mid: #f5a524;
+          --unknown: #e8c547;
         }
         .head {
           display: grid;
@@ -163,7 +151,7 @@ export default function RiskCheck() {
 
         .buckets {
           display: grid;
-          grid-template-columns: repeat(2, minmax(0, 1fr));
+          grid-template-columns: repeat(3, minmax(0, 1fr));
           gap: 20px;
           margin: 0;
           padding: 0;
@@ -180,14 +168,14 @@ export default function RiskCheck() {
           border-radius: 16px;
           background: linear-gradient(180deg, #0d0e0c, #090a09);
         }
-        .l4 {
+        .l3 {
           --tone: var(--critical);
         }
-        .l3 {
+        .l2 {
           --tone: var(--high);
         }
-        .l2 {
-          --tone: var(--mid);
+        .l1 {
+          --tone: var(--unknown);
         }
         .top {
           display: flex;
@@ -323,7 +311,7 @@ export default function RiskCheck() {
           }
         }
         /* the critical meter blinks, like an alarm */
-        .l4 .meter i.on {
+        .l3 .meter i.on {
           animation: alarm 1.4s ease-in-out infinite;
         }
         @keyframes alarm {
@@ -332,7 +320,7 @@ export default function RiskCheck() {
           }
         }
         @media (prefers-reduced-motion: reduce) {
-          .l4 .meter i.on {
+          .l3 .meter i.on {
             animation: none;
           }
           .btn {
