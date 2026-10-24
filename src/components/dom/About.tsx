@@ -15,7 +15,7 @@ const STORY = [
 
 const FACTS: [string, string][] = [
   ['6+ years', 'running Point Blank Dev, since 2020'],
-  ['Fractional CTO', 'for startups in fintech, AI, esports, health and commerce'],
+  ['Tech Leader', 'for startups in fintech, AI, esports, health and commerce'],
   ['$25M+', 'in transaction volume through Charisma, which he built and runs'],
   ['Every layer', 'DevOps, backend, frontend, testing, AI and security'],
 ]
