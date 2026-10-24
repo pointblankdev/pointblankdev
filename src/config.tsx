@@ -18,7 +18,7 @@ export default function Header({ title = titleDefault }) {
       <meta name='description' content={description} />
       <meta
         name='keywords'
-        content='AI security,application security,security review,vulnerability fixes,AI agent security,fractional CTO,Point Blank Dev'
+        content='AI security,application security,security review,vulnerability fixes,AI agent security,tech leader,Point Blank Dev'
       />
       <meta name='robots' content='index,follow' />
       <link rel='canonical' href={url} />
